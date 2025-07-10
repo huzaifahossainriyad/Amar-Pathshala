@@ -421,14 +421,21 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.classList.remove('hidden'); // Show loader during DB operation
 
         try {
-            const { error } = await _supabase
-                .from('books')
-                .upsert([
-                    { id: bookA.id, tbr_order: bookA.tbr_order },
-                    { id: bookB.id, tbr_order: bookB.tbr_order }
-                ]);
+            // --- FIX APPLIED HERE ---
+            // Instead of upsert, use two explicit update calls. This is more robust
+            // and ensures we are only updating existing records, not attempting to insert.
+            const updatePromises = [
+                _supabase.from('books').update({ tbr_order: bookA.tbr_order }).eq('id', bookA.id),
+                _supabase.from('books').update({ tbr_order: bookB.tbr_order }).eq('id', bookB.id)
+            ];
 
-            if (error) throw error;
+            const results = await Promise.all(updatePromises);
+
+            // Check for errors in the results of the promises
+            const anError = results.find(res => res.error);
+            if (anError) {
+                throw anError.error;
+            }
 
             // The localBooks array is now out of sync with the database order.
             // Re-fetch to get the canonical state.
