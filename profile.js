@@ -27,8 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DOM Elements ---
     const userNameHeader = document.getElementById('user-name-header');
-    const totalBooksReadElem = document.getElementById('total-books-read');
-    const totalPagesReadElem = document.getElementById('total-pages-read');
+    
+    // New stat count elements
+    const statsReadCountElem = document.getElementById('stats-read-count');
+    const statsReadingCountElem = document.getElementById('stats-reading-count');
+    const statsWantToReadCountElem = document.getElementById('stats-want-to-read-count');
     
     // Profile Info
     const profileAvatar = document.getElementById('profile-avatar');
@@ -74,30 +77,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /**
+     * Fetches book data for the current user, calculates statistics for 'read', 'reading',
+     * and 'want_to_read' statuses, and updates the corresponding elements on the page.
+     */
     const calculateAndDisplayStats = async () => {
         if (!currentUser) return;
 
-        totalBooksReadElem.textContent = 'লোড হচ্ছে...';
-        totalPagesReadElem.textContent = 'লোড হচ্ছে...';
+        // Set initial loading text for the new stat elements
+        statsReadCountElem.textContent = '...';
+        statsReadingCountElem.textContent = '...';
+        statsWantToReadCountElem.textContent = '...';
 
         try {
+            // Fetch only the 'status' column as it's all we need for these stats
             const { data: books, error } = await _supabase
                 .from('books')
-                .select('status, page_count')
+                .select('status')
                 .eq('user_id', currentUser.id);
 
             if (error) throw error;
 
-            const readBooks = books.filter(book => book.status === 'read');
-            const totalBooks = readBooks.length;
-            const totalPages = readBooks.reduce((sum, book) => sum + (Number(book.page_count) || 0), 0);
+            // Calculate counts for each status
+            const readCount = books.filter(book => book.status === 'read').length;
+            const readingCount = books.filter(book => book.status === 'reading').length;
+            const wantToReadCount = books.filter(book => book.status === 'want_to_read').length;
 
-            totalBooksReadElem.textContent = totalBooks.toLocaleString('bn-BD');
-            totalPagesReadElem.textContent = totalPages.toLocaleString('bn-BD');
+            // Display the calculated counts in the new elements
+            statsReadCountElem.textContent = readCount.toLocaleString('bn-BD');
+            statsReadingCountElem.textContent = readingCount.toLocaleString('bn-BD');
+            statsWantToReadCountElem.textContent = wantToReadCount.toLocaleString('bn-BD');
+
         } catch(error) {
             console.error('Error fetching book stats:', error);
-            totalBooksReadElem.textContent = 'ত্রুটি';
-            totalPagesReadElem.textContent = 'ত্রুটি';
+            // Display an error message in all stat elements if fetching fails
+            statsReadCountElem.textContent = 'ত্রুটি';
+            statsReadingCountElem.textContent = 'ত্রুটি';
+            statsWantToReadCountElem.textContent = 'ত্রুটি';
             showToast('পরিসংখ্যান লোড করা সম্ভব হয়নি।', 'error');
         }
     };
@@ -157,32 +173,27 @@ document.addEventListener('DOMContentLoaded', () => {
         setButtonLoading(uploadAvatarBtn, true);
 
         try {
-            // 1. Define the file path, not a full URL.
             const fileExt = file.name.split('.').pop();
             const filePath = `${currentUser.id}/avatar.${fileExt}`;
 
-            // 2. Upload the file to the private 'avatars' bucket.
             const { error: uploadError } = await _supabase.storage
                 .from('avatars')
                 .upload(filePath, file, {
                     cacheControl: '3600',
-                    upsert: true, // Overwrite existing file for the user
+                    upsert: true,
                 });
             if (uploadError) throw uploadError;
 
-            // 3. Update the 'profiles' table with the FILE PATH.
             const { error: updateError } = await _supabase
                 .from('profiles')
                 .upsert({ id: currentUser.id, avatar_url: filePath }, { onConflict: 'id' });
             if (updateError) throw updateError;
             
-            // 4. Create a short-lived signed URL to display the image immediately.
             const { data: signedUrlData, error: signedUrlError } = await _supabase.storage
                 .from('avatars')
-                .createSignedUrl(filePath, 60); // Valid for 60 seconds
+                .createSignedUrl(filePath, 60);
             if (signedUrlError) throw signedUrlError;
 
-            // 5. Set the image sources to the new signed URL.
             const newAvatarSrc = signedUrlData.signedUrl;
             if(profileAvatar) profileAvatar.src = newAvatarSrc;
             if(headerAvatar) headerAvatar.src = newAvatarSrc;
@@ -227,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const renderReadingChart = async () => {
-        // Chart rendering logic remains the same
         if (!currentUser || !readingChartCanvas) return;
         
         try {
@@ -285,7 +295,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const exportDataToCSV = async () => {
-        // Data export logic remains the same
         showToast('ডেটা প্রস্তুত করা হচ্ছে...');
         try {
             const { data: books, error } = await _supabase
@@ -321,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadDataBtn.addEventListener('click', exportDataToCSV);
 
     deleteAccountBtn.addEventListener('click', () => {
-        // This requires a secure confirmation modal, not window.confirm
         showToast('এই কার্যকারিতাটির জন্য একটি নিরাপদ কাস্টম মডেল প্রয়োজন।', 'info');
     });
 
@@ -348,29 +356,24 @@ document.addEventListener('DOMContentLoaded', () => {
             userNameHeader.textContent = `স্বাগতম, ${displayName}`;
             fullNameInput.value = displayName;
             
-            // 1. Set a default avatar source.
             let avatarSrc = `https://placehold.co/128x128/EAE0D5/4A3F35?text=${encodeURIComponent(displayName.charAt(0))}`;
             
-            // 2. If an avatar path exists in the profile, create a signed URL for it.
             if (profile && profile.avatar_url) {
                 try {
                     const { data: signedUrlData, error: signedUrlError } = await _supabase.storage
                         .from('avatars')
-                        .createSignedUrl(profile.avatar_url, 3600); // Valid for 1 hour
+                        .createSignedUrl(profile.avatar_url, 3600); 
 
                     if (signedUrlError) throw signedUrlError;
                     
-                    // 3. If successful, update the avatar source.
                     avatarSrc = signedUrlData.signedUrl;
 
                 } catch (error) {
                     console.error('Error creating signed URL for profile avatar:', error);
                     showToast('প্রোফাইল ছবি লোড করা যায়নি।', 'error');
-                    // If creating the URL fails, the placeholder will be used.
                 }
             }
 
-            // 4. Set the avatar sources on the page.
             if (profileAvatar) profileAvatar.src = avatarSrc;
             if (headerAvatar) headerAvatar.src = avatarSrc;
 

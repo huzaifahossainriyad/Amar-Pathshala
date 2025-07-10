@@ -31,7 +31,6 @@
             <a href="./dashboard.html" class="text-2xl md:text-3xl font-bold text-[#4A3F35] hover:text-[#785A3E] transition-colors">
                 &larr; ড্যাশবোর্ডে ফিরে যান
             </a>
-            <!-- *** সংশোধিত: ব্যবহারকারীর নাম ও প্রোফাইল ছবি একসাথে দেখানো হয়েছে *** -->
             <div class="flex items-center space-x-4">
                 <p id="user-name-header" class="text-sm md:text-base text-right text-[#4A3F35] font-medium"></p>
                 <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300">
@@ -47,7 +46,6 @@
                 <section id="profile-info-section" class="profile-section">
                     <h2 class="section-title">প্রোফাইল তথ্য</h2>
                     <div class="text-center mb-6">
-                        <!-- *** সংশোধিত: প্রোফাইল ছবির ক্লাস আপডেট করা হয়েছে *** -->
                         <img id="profile-avatar" src="https://placehold.co/128x128/EAE0D5/4A3F35?text=?" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                     </div>
                     <form id="name-update-form" class="space-y-4">
@@ -80,19 +78,27 @@
 
             <!-- Right Column: Stats, Settings, etc. -->
             <div class="lg:col-span-2 space-y-8">
-                <!-- Reading Statistics Section -->
+                <!-- Reading Statistics Section (UPDATED) -->
                 <section id="reading-stats" class="profile-section">
                     <h2 class="section-title">আপনার পড়ার পরিসংখ্যান</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Stat Card 1: Finished Reading -->
                         <div class="stat-card">
-                            <h3 class="text-lg font-semibold text-gray-600 mb-1">পড়া শেষ করেছেন</h3>
-                            <div id="total-books-read" class="text-4xl font-bold text-[#785A3E]">...</div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-1">পড়া শেষ</h3>
+                            <div id="stats-read-count" class="text-4xl font-bold text-[#785A3E]">...</div>
                             <p class="text-gray-500 mt-1">টি বই</p>
                         </div>
+                        <!-- Stat Card 2: Currently Reading -->
                         <div class="stat-card">
-                            <h3 class="text-lg font-semibold text-gray-600 mb-1">মোট পৃষ্ঠা পড়েছেন</h3>
-                            <div id="total-pages-read" class="text-4xl font-bold text-[#785A3E]">...</div>
-                            <p class="text-gray-500 mt-1">টি পৃষ্ঠা</p>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-1">এখন পড়ছি</h3>
+                            <div id="stats-reading-count" class="text-4xl font-bold text-[#785A3E]">...</div>
+                            <p class="text-gray-500 mt-1">টি বই</p>
+                        </div>
+                        <!-- Stat Card 3: Want to Read -->
+                        <div class="stat-card">
+                            <h3 class="text-lg font-semibold text-gray-600 mb-1">পড়ার তালিকায়</h3>
+                            <div id="stats-want-to-read-count" class="text-4xl font-bold text-[#785A3E]">...</div>
+                            <p class="text-gray-500 mt-1">টি বই</p>
                         </div>
                     </div>
                 </section>
