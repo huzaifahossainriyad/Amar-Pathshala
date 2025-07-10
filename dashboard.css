@@ -1,3 +1,21 @@
+/* --- New Body Style with Background Image --- */
+body {
+    background-image: url('https://images.unsplash.com/photo-1568667256549-094345857637?q=80&w=1915&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Tiro Bangla', serif; /* Moved from original body rule */
+    color: #4A3F35; /* Moved from original body rule */
+}
+
+/* --- Container for main content to ensure readability --- */
+#bookshelf {
+    background-color: rgba(253, 248, 240, 0.92); /* #FDF8F0 with 92% opacity */
+    padding: 2rem;
+    border-radius: 0.75rem; /* 12px */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
 /* --- Google Books সার্চ রেজাল্টের জন্য স্টাইল --- */
 #search-results {
     border-radius: 6px;
@@ -26,4 +44,20 @@
 .search-result-author {
     font-size: 0.9rem;
     color: #785A3E;
+}
+
+/* Spinner for loading states, copied from profile.css for consistency */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

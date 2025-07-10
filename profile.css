@@ -2,12 +2,26 @@
 body {
     font-family: 'Tiro Bangla', serif;
     color: #4A3F35;
+    background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2098&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* --- Containers for main content to ensure readability --- */
+#reading-stats,
+#account-settings {
+    background-color: rgba(253, 248, 240, 0.92); /* #FDF8F0 with 92% opacity */
+    padding: 2rem;
+    border-radius: 0.75rem; /* 12px */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 /* --- পরিসংখ্যান কার্ডের জন্য স্টাইল --- */
 .stat-card {
     border-top: 4px solid #785A3E;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* The background is now set via Tailwind in the HTML (bg-white/70) */
 }
 
 .stat-card:hover {

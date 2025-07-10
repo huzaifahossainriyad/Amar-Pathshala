@@ -16,18 +16,24 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="dashboard.css">
 </head>
-<body class="antialiased bg-[#FDF8F0]">
+<body class="antialiased">
 
     <!-- Header Section -->
     <header id="header" class="bg-[#FDF8F0]/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">আমার পাঠশালা</a>
             <div class="flex items-center space-x-4 md:space-x-6">
-                <!-- পরিবর্তিত অংশ শুরু -->
-                <a href="./profile.html" id="user-welcome-link" class="text-sm md:text-base text-right text-[#4A3F35] font-medium hover:text-[#785A3E] transition-colors">
-                    <span id="user-welcome-message">স্বাগতম, ...</span>
+                <!-- Welcome message (no longer a link) -->
+                <span id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] font-medium">স্বাগতম, ...</span>
+                
+                <!-- Settings Icon Link -->
+                <a href="./profile.html" class="text-[#4A3F35]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hover:text-gray-700 transition-colors">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.242 1.417l-1.07 1.071c-.13.13-.242.289-.32.455a3.75 3.75 0 0 1 0 1.51c.078.166.19.326.32.456l1.07 1.071a1.125 1.125 0 0 1 .242 1.417l-1.296 2.247a1.125 1.125 0 0 1-1.37.49l-1.217-.456a3.75 3.75 0 0 1-1.075.124c-.073.044-.146.087-.22.127a3.75 3.75 0 0 1-.645.87l-.213 1.281c-.09.542-.56.94-1.11-.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281a3.75 3.75 0 0 1-.645-.87c-.074-.04-.147-.083-.22-.127a3.75 3.75 0 0 1-1.075-.124l-1.217.456a1.125 1.125 0 0 1-1.37-.49l-1.296-2.247a1.125 1.125 0 0 1 .242-1.417l1.07-1.071c.13-.13.242.289-.32-.455a3.75 3.75 0 0 1 0-1.51c-.078-.166-.19-.326-.32-.456l-1.07-1.071a1.125 1.125 0 0 1-.242-1.417l1.296-2.247a1.125 1.125 0 0 1 1.37-.49l1.217.456c.355.133.75.072 1.075-.124.073-.044.146-.087-.22-.127.332-.183.582-.496.645-.87l.213-1.281Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
                 </a>
-                <!-- পরিবর্তিত অংশ শেষ -->
+
                 <button id="logout-button" class="bg-[#785A3E] hover:bg-[#664c32] text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center text-sm md:text-base">
                     <span class="button-text">লগআউট</span>
                     <div class="spinner hidden ml-2"></div>
