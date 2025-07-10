@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="bn" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রবেশ করুন - আমার পাঠশালা</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts (Hind Siliguri) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-start: #e0eafc;
+            --bg-end: #cfdef3;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --input-bg: rgba(224, 234, 252, 0.5);
+            --input-text: #2c3e50;
+            --input-focus-border: #48c9b0;
+            --accent: #48c9b0;
+            --accent-dark: #41b49d;
+            --error: #e74c3c;
+            --switch-bg: #34495e;
+            --switch-icon: #f1c40f;
+        }
+
+        html.dark {
+            --bg-start: #2c3e50;
+            --bg-end: #34495e;
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --card-bg: rgba(44, 62, 80, 0.65);
+            --card-border: rgba(52, 73, 94, 0.8);
+            --input-bg: rgba(52, 73, 94, 0.7);
+            --input-text: #ecf0f1;
+            --input-focus-border: #48c9b0;
+            --switch-bg: #ecf0f1;
+            --switch-icon: #48c9b0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: var(--bg-end);
+        }
+
+        .glass-card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-label-group {
+            position: relative;
+        }
+
+        .floating-label {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            transition: all 0.2s ease-out;
+            pointer-events: none;
+            background-color: transparent;
+        }
+
+        .floating-input:focus + .floating-label,
+        .floating-input:not(:placeholder-shown) + .floating-label {
+            top: 0;
+            left: 0.75rem;
+            transform: translateY(-50%) scale(0.8);
+            background-color: var(--card-bg);
+            padding: 0 0.25rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .tab-slider {
+            position: absolute;
+            bottom: -2px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 1.5px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .password-strength-bar {
+            height: 5px;
+            width: 0%;
+            background-color: var(--error);
+            border-radius: 2.5px;
+            transition: all 0.3s ease;
+        }
+        .password-strength-bar.weak { width: 33%; background-color: #e74c3c; }
+        .password-strength-bar.medium { width: 66%; background-color: #f1c40f; }
+        .password-strength-bar.strong { width: 100%; background-color: #2ecc71; }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-[var(--text-primary)]">
+
+    <main class="flex w-full min-h-screen">
+        <!-- Left Panel -->
+        <div class="hidden lg:flex w-2/5 items-center justify-center p-12 flex-col text-center relative overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&w=800&q=80');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="z-10 text-white">
+                <h1 class="text-5xl font-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">আমার পাঠশালা</h1>
+                <p class="mt-4 text-xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">আপনার জ্ঞানের ডিজিটাল সংগ্রহশালা। প্রতিটি বই হোক এক একটি নতুন পৃথিবী।</p>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="w-full lg:w-3/5 flex items-center justify-center p-6 sm:p-12">
+            <div class="w-full max-w-md">
+                
+                <!-- Theme Toggle -->
+                <div class="absolute top-6 right-6">
+                    <button id="theme-toggle" class="p-2 rounded-full bg-[var(--switch-bg)] text-[var(--switch-icon)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent)]" aria-label="থিম পরিবর্তন করুন">
+                        <svg id="theme-icon-sun" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg id="theme-icon-moon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                </div>
+
+                <div class="glass-card p-8 sm:p-10 rounded-2xl w-full">
+                    <!-- Tabs -->
+                    <div class="relative border-b-2 border-gray-200 dark:border-gray-700 mb-8">
+                        <div class="flex">
+                            <button id="login-tab" class="w-1/2 py-3 font-semibold text-center transition-colors duration-300">লগইন</button>
+                            <button id="signup-tab" class="w-1/2 py-3 font-semibold text-center transition-colors duration-300 text-[var(--text-secondary)]">সাইন-আপ</button>
+                        </div>
+                        <div id="tab-slider" class="tab-slider"></div>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="space-y-6">
+                        <div class="floating-label-group">
+                            <input type="email" id="login-email" name="login-email" class="floating-input w-full p-4 rounded-lg bg-[var(--input-bg)] border-2 border-transparent focus:outline-none text-[var(--input-text)]" placeholder=" " required>
+                            <label for="login-email" class="floating-label">ইমেইল ঠিকানা</label>
+                            <p class="error-message text-xs text-[var(--error)] mt-1 h-4"></p>
+                        </div>
+                        <div class="floating-label-group relative">
+                            <input type="password" id="login-password" name="login-password" class="floating-input w-full p-4 rounded-lg bg-[var(--input-bg)] border-2 border-transparent focus:outline-none text-[var(--input-text)]" placeholder=" " required>
+                            <label for="login-password" class="floating-label">পাসওয়ার্ড</label>
+                            <button type="button" class="password-toggle absolute top-1/2 right-4 -translate-y-1/2 text-[var(--text-secondary)]" aria-label="পাসওয়ার্ড দেখুন">
+                                <svg class="eye-open w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <svg class="eye-closed w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .946-3.118 3.546-5.446 6.804-6.19M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.582 17.582A7.001 7.001 0 0112 19a7.002 7.002 0 01-5.582-2.418M2.458 12C3.732 7.943 7.523 5 12 5c1.13 0 2.21.21 3.22.597M12 5v.01M21 3l-6 6-3 3-6-6L3 21"></path></svg>
+                            </button>
+                            <p class="error-message text-xs text-[var(--error)] mt-1 h-4"></p>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="rounded border-gray-300 text-[var(--accent)] shadow-sm focus:border-[var(--accent)] focus:ring focus:ring-offset-0 focus:ring-[var(--accent)] focus:ring-opacity-50">
+                                আমাকে মনে রাখুন
+                            </label>
+                            <a href="#" class="font-semibold text-[var(--accent)] hover:text-[var(--accent-dark)]">পাসওয়ার্ড ভুলে গেছেন?</a>
+                        </div>
+                        <button type="submit" id="login-submit" class="w-full bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg flex items-center justify-center h-12 relative disabled:opacity-70 disabled:cursor-not-allowed">
+                            <span class="button-text">লগইন করুন</span>
+                            <div class="spinner hidden absolute"></div>
+                        </button>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form id="signup-form" class="space-y-6 hidden">
+                        <div class="floating-label-group">
+                            <input type="text" id="signup-name" name="signup-name" class="floating-input w-full p-4 rounded-lg bg-[var(--input-bg)] border-2 border-transparent focus:outline-none text-[var(--input-text)]" placeholder=" " required>
+                            <label for="signup-name" class="floating-label">আপনার নাম</label>
+                            <p class="error-message text-xs text-[var(--error)] mt-1 h-4"></p>
+                        </div>
+                        <div class="floating-label-group">
+                            <input type="email" id="signup-email" name="signup-email" class="floating-input w-full p-4 rounded-lg bg-[var(--input-bg)] border-2 border-transparent focus:outline-none text-[var(--input-text)]" placeholder=" " required>
+                            <label for="signup-email" class="floating-label">ইমেইল ঠিকানা</label>
+                            <p class="error-message text-xs text-[var(--error)] mt-1 h-4"></p>
+                        </div>
+                        <div class="floating-label-group relative">
+                            <input type="password" id="signup-password" name="signup-password" class="floating-input w-full p-4 rounded-lg bg-[var(--input-bg)] border-2 border-transparent focus:outline-none text-[var(--input-text)]" placeholder=" " required>
+                            <label for="signup-password" class="floating-label">নতুন পাসওয়ার্ড</label>
+                            <button type="button" class="password-toggle absolute top-1/2 right-4 -translate-y-1/2 text-[var(--text-secondary)]" aria-label="পাসওয়ার্ড দেখুন">
+                                <svg class="eye-open w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <svg class="eye-closed w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .946-3.118 3.546-5.446 6.804-6.19M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.582 17.582A7.001 7.001 0 0112 19a7.002 7.002 0 01-5.582-2.418M2.458 12C3.732 7.943 7.523 5 12 5c1.13 0 2.21.21 3.22.597M12 5v.01M21 3l-6 6-3 3-6-6L3 21"></path></svg>
+                            </button>
+                            <div class="mt-2">
+                                <div class="password-strength-bar"></div>
+                                <p id="password-strength-text" class="text-xs text-[var(--text-secondary)] mt-1 h-4"></p>
+                            </div>
+                        </div>
+                         <div class="floating-label-group">
+                            <input type="password" id="confirm-password" name="confirm-password" class="floating-input w-full p-4 rounded-lg bg-[var(--input-bg)] border-2 border-transparent focus:outline-none text-[var(--input-text)]" placeholder=" " required>
+                            <label for="confirm-password" class="floating-label">পাসওয়ার্ড নিশ্চিত করুন</label>
+                            <p class="error-message text-xs text-[var(--error)] mt-1 h-4"></p>
+                        </div>
+                        <button type="submit" id="signup-submit" class="w-full bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg flex items-center justify-center h-12 relative disabled:opacity-70 disabled:cursor-not-allowed">
+                            <span class="button-text">একাউন্ট তৈরি করুন</span>
+                            <div class="spinner hidden absolute"></div>
+                        </button>
+                    </form>
+
+                    <!-- Social Login -->
+                    <div class="mt-8">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-[var(--card-bg)] text-[var(--text-secondary)]">অথবা ادامه দিন</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.519-3.108-11.187-7.481l-6.571,4.819C9.656,39.663,16.318,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C41.371,34.196,44,28.718,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
+                                গুগল
+                            </a>
+                            <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill="#1877F2" d="M24,12c0,6.627-5.373,12-12,12S0,18.627,0,12C0,5.373,5.373,0,12,0S24,5.373,24,12z"></path><path fill="#FFF" d="M16.5,8.25H14.25c-0.966,0-1.125,0.45-1.125,1.104v1.521h3.375l-0.45,3.375h-2.925V21h-3.375v-6.75H7.5v-3.375h2.625V7.812c0-2.604,1.59-4.031,3.926-4.031l2.824,0.01V7.125C16.734,7.125,16.5,8.25,16.5,8.25z"></path></svg>
+                                ফেসবুক
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Supabase Client Library (প্রয়োজনীয়) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- পরিবর্তিত জাভাস্ক্রিপ্ট কোড -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Elements (অপরিবর্তিত)
+        const loginTab = document.getElementById('login-tab');
+        const signupTab = document.getElementById('signup-tab');
+        const tabSlider = document.getElementById('tab-slider');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const themeToggle = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('theme-icon-sun');
+        const moonIcon = document.getElementById('theme-icon-moon');
+        const passwordToggles = document.querySelectorAll('.password-toggle');
+        const signupPasswordInput = document.getElementById('signup-password');
+        const strengthBar = document.querySelector('.password-strength-bar');
+        const strengthText = document.getElementById('password-strength-text');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const allForms = document.querySelectorAll('form');
+
+        // --- Supabase Client Initialization (নতুন যুক্ত করা হয়েছে) ---
+        const SUPABASE_URL = 'https://mfdjzklkwndjifsomxtm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZGp6a2xrd25kamlmc29teHRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3OTMwMTMsImV4cCI6MjA2NzM2OTAxM30.qF407SzDMtbJHFt7GAOxNVeObhAmt0t_nGH3CtVGtPs';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- সকল ফিচার অপরিবর্তিত রাখা হয়েছে ---
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        };
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(currentTheme);
+        themeToggle.addEventListener('click', () => {
+            const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+
+        const updateSlider = (tab) => {
+            tabSlider.style.width = `${tab.offsetWidth}px`;
+            tabSlider.style.left = `${tab.offsetLeft}px`;
+        };
+        const setActiveTab = (tab) => {
+            if (tab === loginTab) {
+                loginTab.classList.remove('text-[var(--text-secondary)]');
+                signupTab.classList.add('text-[var(--text-secondary)]');
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            } else {
+                signupTab.classList.remove('text-[var(--text-secondary)]');
+                loginTab.classList.add('text-[var(--text-secondary)]');
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+            updateSlider(tab);
+        };
+        loginTab.addEventListener('click', () => setActiveTab(loginTab));
+        signupTab.addEventListener('click', () => setActiveTab(signupTab));
+        setTimeout(() => updateSlider(loginTab), 50);
+
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const passwordInput = toggle.previousElementSibling;
+                const eyeOpen = toggle.querySelector('.eye-open');
+                const eyeClosed = toggle.querySelector('.eye-closed');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeOpen.classList.add('hidden');
+                    eyeClosed.classList.remove('hidden');
+                } else {
+                    passwordInput.type = 'password';
+                    eyeOpen.classList.remove('hidden');
+                    eyeClosed.classList.add('hidden');
+                }
+            });
+        });
+        
+        const validators = {
+            'signup-name': (val) => val.length >= 3 ? '' : 'নাম কমপক্ষে ৩ অক্ষরের হতে হবে।',
+            'login-email': (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? '' : 'সঠিক ইমেইল ঠিকানা লিখুন।',
+            'signup-email': (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? '' : 'সঠিক ইমেইল ঠিকানা লিখুন।',
+            'login-password': (val) => val.length >= 6 ? '' : 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।',
+            'signup-password': (val) => {
+                if (val.length < 8) return 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।';
+                if (!/[A-Z]/.test(val)) return 'একটি বড় হাতের অক্ষর থাকতে হবে।';
+                if (!/[a-z]/.test(val)) return 'একটি ছোট হাতের অক্ষর থাকতে হবে।';
+                if (!/[0-9]/.test(val)) return 'একটি সংখ্যা থাকতে হবে।';
+                return '';
+            },
+            'confirm-password': (val) => val === signupPasswordInput.value ? '' : 'পাসওয়ার্ড দুটি মেলেনি।'
+        };
+
+        const checkPasswordStrength = (password) => {
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            strengthBar.classList.remove('weak', 'medium', 'strong');
+            if (score <= 2) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'দুর্বল';
+            } else if (score <= 4) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'মাঝারি';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'শক্তিশালী';
+            }
+        };
+        
+        const validateField = (input) => {
+            const errorMessage = validators[input.name](input.value);
+            const errorElement = input.parentElement.querySelector('.error-message');
+            if(errorElement) errorElement.textContent = errorMessage;
+            
+            if (input.name === 'signup-password') {
+                checkPasswordStrength(input.value);
+                validateField(confirmPasswordInput);
+            }
+            checkFormValidity(input.form);
+        };
+
+        const checkFormValidity = (form) => {
+            const inputs = form.querySelectorAll('input[required]');
+            const submitButton = form.querySelector('button[type="submit"]');
+            let isFormValid = true;
+            inputs.forEach(input => {
+                if (validators[input.name] && validators[input.name](input.value) !== '') {
+                    isFormValid = false;
+                }
+            });
+            if (submitButton) {
+                submitButton.disabled = !isFormValid;
+            }
+        };
+
+        allForms.forEach(form => {
+            const inputs = form.querySelectorAll('input[required]');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+            });
+            checkFormValidity(form);
+        });
+
+        // --- Form Submission (পরিবর্তিত এবং Supabase যুক্ত) ---
+        allForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const button = form.querySelector('button[type="submit"]');
+                const spinner = button.querySelector('.spinner');
+                const errorElement = form.querySelector('.error-message');
+                
+                // আগের সকল error মুছে ফেলা হলো
+                if(errorElement) errorElement.textContent = '';
+                const allErrorMessages = form.querySelectorAll('.error-message');
+                allErrorMessages.forEach(el => el.textContent = '');
+
+                button.disabled = true;
+                if(spinner) spinner.classList.remove('hidden');
+
+                try {
+                    if (form.id === 'signup-form') {
+                        const name = document.getElementById('signup-name').value;
+                        const email = document.getElementById('signup-email').value;
+                        const password = document.getElementById('signup-password').value;
+
+                        const { data, error } = await _supabase.auth.signUp({
+                            email: email,
+                            password: password,
+                            options: {
+                                data: {
+                                    full_name: name
+                                }
+                            }
+                        });
+
+                        if (error) throw error;
+                        
+                        alert('সাইন-আপ সফল! আপনার ইমেইল চেক করে একাউন্ট ভেরিফাই করুন।');
+                        form.reset(); // ফর্ম রিসেট করা হলো
+
+                    } else if (form.id === 'login-form') {
+                        const email = document.getElementById('login-email').value;
+                        const password = document.getElementById('login-password').value;
+
+                        const { data, error } = await _supabase.auth.signInWithPassword({
+                            email: email,
+                            password: password
+                        });
+                        
+                        if (error) throw error;
+                        
+                        alert('লগইন সফল!');
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (error) {
+                    console.error('Authentication Error:', error.message);
+                    // প্রথম যে ইনপুটের সাথে error-message আছে, সেখানে দেখানো হলো
+                    const firstErrorContainer = form.querySelector('.error-message');
+                    if (firstErrorContainer) {
+                        firstErrorContainer.textContent = error.message;
+                    }
+                } finally {
+                    // লোডিং অবস্থা শেষ করা হলো
+                    if(spinner) spinner.classList.add('hidden');
+                    checkFormValidity(form); // বাটনটি পুনরায় فعال করা হলো
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

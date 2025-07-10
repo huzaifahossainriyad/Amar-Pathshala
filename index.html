@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার পাঠশালা - আপনার ব্যক্তিগত ডিজিটাল লাইব্রেরি</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Tiro Bangla & Lora) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <!-- AOS (Animate On Scroll) Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* --- বেসিক এবং কাস্টম স্টাইল --- */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Tiro Bangla', serif;
+            background-color: #FDF8F0;
+            color: #4A3F35;
+        }
+        .font-english {
+            font-family: 'Lora', serif;
+        }
+
+        /* --- নতুন, আকর্ষণীয় এবং ছবিসহ লোডার --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            background-size: cover;
+            background-position: center;
+            /* আপনার দেওয়া লিঙ্ক থেকে লোডারের ব্যাকগ্রাউন্ড ছবি */
+            background-image: url('https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=2070&auto=format&fit=crop');
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        .preloader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* ছবির উপর একটি কালো আস্তরণ */
+            backdrop-filter: blur(8px); /* ব্যাকগ্রাউন্ড ব্লার ইফেক্ট */
+        }
+        .loader-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+        }
+        #loader-percentage {
+            font-family: 'Lora', serif;
+            font-size: 4rem; /* শতাংশ লেখার সাইজ বড় করা হয়েছে */
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .progress-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 20px auto 0;
+            overflow: hidden;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #FDF8F0;
+            border-radius: 5px;
+            transition: width 0.2s linear;
+        }
+        body.loaded #preloader {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* --- হিরো সেকশন --- */
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* --- ফিচার কার্ডের হোভার ইফেক্ট --- */
+        .feature-card {
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(74, 63, 53, 0.15);
+        }
+        
+        /* --- যোগাযোগ সেকশনের আইকন স্টাইল --- */
+        .contact-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            stroke-width: 1.5;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Preloader Section -->
+    <div id="preloader">
+        <div class="preloader-overlay"></div>
+        <div class="loader-content">
+            <div id="loader-percentage">0%</div>
+            <div class="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header id="header" class="bg-[#FDF8F0]/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 transition-all duration-300">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">আমার পাঠশালা</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="hover:text-[#785A3E] transition-colors duration-300">ফিচারস</a>
+                <a href="#creator" class="hover:text-[#785A3E] transition-colors duration-300">নির্মাতা</a>
+                <a href="#contact" class="hover:text-[#785A3E] transition-colors duration-300">যোগাযোগ</a>
+                <a href="login.html" class="bg-[#785A3E] hover:bg-[#664c32] text-white font-semibold py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">প্রবেশ করুন</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="focus:outline-none">
+                    <svg class="w-7 h-7" style="color: #4A3F35;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden bg-[#FDF8F0]/95 backdrop-blur-lg pb-4">
+            <a href="#features" class="block text-center py-2 px-4 hover:bg-[#EAE0D5]">ফিচারস</a>
+            <a href="#creator" class="block text-center py-2 px-4 hover:bg-[#EAE0D5]">নির্মাতা</a>
+            <a href="#contact" class="block text-center py-2 px-4 hover:bg-[#EAE0D5]">যোগাযোগ</a>
+            <a href="login.html" class="block text-center mx-4 mt-2 bg-[#785A3E] hover:bg-[#664c32] text-white font-semibold py-2 px-4 rounded-lg transition duration-300">প্রবেশ করুন</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero-bg text-white min-h-[90vh] flex items-center justify-center">
+            <div class="container mx-auto px-6 text-center" data-aos="fade-up">
+                <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 leading-tight" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">আপনার বইয়ের জগৎ, আপনার হাতের মুঠোয়</h1>
+                <p class="text-base md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);">পঠিত বইয়ের হিসাব রাখুন, নতুন বই আবিষ্কার করুন এবং আপনার পড়ার অভ্যাসকে একটি সুন্দর যাত্রায় পরিণত করুন।</p>
+                <a href="login.html" class="bg-[#FDF8F0] text-[#4A3F35] font-bold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105 text-lg shadow-xl hover:shadow-2xl">আপনার পাঠশালা তৈরি করুন</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-16 md:py-24" style="background-color: #FBF3E9;">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: #4A3F35;">আপনার ব্যক্তিগত লাইব্রেরির বৈশিষ্ট্য</h2>
+                    <p class="text-lg text-gray-600">যেসব সুবিধা আপনার বই পড়াকে করবে আরও আনন্দদায়ক ও গোছানো</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="feature-card bg-white p-8 rounded-xl shadow-lg border-t-4 border-amber-600" data-aos="fade-up" data-aos-delay="100">
+                        <img src="https://images.unsplash.com/photo-1550399105-c4db5fb85c18?q=80&w=2071&auto=format&fit=crop" 
+                             alt="ইসলামিক বইয়ের তাক" 
+                             class="w-full h-48 object-cover rounded-md mb-6 shadow-md bg-gray-200"
+                             onerror="this.onerror=null;this.src='https://placehold.co/800x480/EAE0D5/4A3F35?text=ছবি+লোড+করা+যায়নি';">
+                        <h3 class="text-2xl font-semibold mb-3 text-amber-800">ডিজিটাল বুকশেলফ</h3>
+                        <p class="text-gray-600 leading-relaxed">আপনার সব বই—পড়া, অপঠিত, এবং বর্তমানে যা পড়ছেন—সবকিছু গুছিয়ে রাখুন একটি মাত্র শেলফে।</p>
+                    </div>
+                    <div class="feature-card bg-white p-8 rounded-xl shadow-lg border-t-4 border-emerald-600" data-aos="fade-up" data-aos-delay="200">
+                        <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=2070&auto=format&fit=crop" 
+                             alt="বইয়ের তাক" 
+                             class="w-full h-48 object-cover rounded-md mb-6 shadow-md bg-gray-200"
+                             onerror="this.onerror=null;this.src='https://placehold.co/800x480/EAE0D5/4A3F35?text=ছবি+লোড+করা+যায়নি';">
+                        <h3 class="text-2xl font-semibold mb-3 text-emerald-800">পড়ার অগ্রগতি</h3>
+                        <p class="text-gray-600 leading-relaxed">কোন বই কবে শুরু করেছেন, কবে শেষ করেছেন অথবা কতটুকু পড়েছেন, তার নিখুঁত হিসাব রাখুন।</p>
+                    </div>
+                    <div class="feature-card bg-white p-8 rounded-xl shadow-lg border-t-4 border-sky-600" data-aos="fade-up" data-aos-delay="300">
+                        <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1973&auto=format&fit=crop" 
+                             alt="নোট করার ছবি" 
+                             class="w-full h-48 object-cover rounded-md mb-6 shadow-md bg-gray-200"
+                             onerror="this.onerror=null;this.src='https://placehold.co/800x480/EAE0D5/4A3F35?text=ছবি+লোড+করা+যায়নি';">
+                        <h3 class="text-2xl font-semibold mb-3 text-sky-800">ব্যক্তিগত নোটস</h3>
+                        <p class="text-gray-600 leading-relaxed">বই পড়ার সময় আপনার প্রিয় উক্তি বা নিজস্ব ভাবনাগুলো টুকে রাখুন প্রতিটি বইয়ের সাথে।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Creator Section -->
+        <section id="creator" class="py-16 md:py-24">
+            <div class="container mx-auto px-6" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center" style="color: #4A3F35;">এই উদ্যোগের পেছনের মানুষটি</h2>
+                <div class="max-w-4xl mx-auto bg-white/60 p-6 md:p-12 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-8 md:gap-10" style="background-color: #FBF3E9;">
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974&auto=format&fit=crop" 
+                         alt="রিয়াদ হোসেন হুযাইফা" 
+                         class="w-36 h-36 md:w-48 md:h-48 rounded-full shadow-lg border-4 border-white object-cover flex-shrink-0 bg-gray-200">
+                    <div class="text-center md:text-left mt-6 md:mt-0">
+                        <h3 class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">রিয়াদ হোসেন হুযাইফা</h3>
+                        <p class="font-semibold mb-4 text-lg" style="color: #785A3E;">প্রতিষ্ঠাতা, আমার পাঠশালা</p>
+                        <blockquote class="text-gray-700 leading-relaxed italic mb-4 border-l-4 border-[#EAE0D5] pl-4 text-sm md:text-base">
+                            "ঢাকার শ্যামপুরের কোলাহল থেকে, বইয়ের প্রতি অদম্য ভালোবাসা আর প্রযুক্তিকে কাজে লাগানোর স্বপ্ন নিয়ে আমার এই পথচলা। 'আমার পাঠশালা' শুধু একটি ওয়েবসাইট নয়, এটি আমার মতো হাজারো বইপ্রেমীর জন্য একটি আপন ঠিকানা তৈরির চেষ্টা।"
+                        </blockquote>
+                        <div class="border-t border-[#EAE0D5] pt-4 mt-4">
+                            <p class="text-sm text-gray-600"><strong style="color: #785A3E;">অবস্থান:</strong> ফরিদাবাদ, শ্যামপুর, ঢাকা-১২০৪</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 md:py-24" style="background-color: #FBF3E9;">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: #4A3F35;">যোগাযোগ করুন</h2>
+                    <p class="text-lg text-gray-600">যেকোনো প্রয়োজনে, আমি আছি আপনার পাশে</p>
+                </div>
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <a href="mailto:huzaifahossainriyad@gmail.com" class="inline-block p-6 bg-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-transform duration-300">
+                            <svg class="contact-icon text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                        </a>
+                        <h3 class="mt-5 text-xl font-semibold" style="color: #4A3F35;">ইমেইল</h3>
+                        <p class="text-gray-600 text-sm md:text-base break-all px-2">huzaifahossainriyad@gmail.com</p>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <a href="tel:+8801910112001" class="inline-block p-6 bg-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-transform duration-300">
+                             <svg class="contact-icon text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 6.75z" /></svg>
+                        </a>
+                        <h3 class="mt-5 text-xl font-semibold" style="color: #4A3F35;">মোবাইল</h3>
+                        <p class="text-gray-600">+৮৮০১৯১০১১২০০১</p>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="300">
+                        <a href="https://www.facebook.com/riyadhossainhuzaifa.humayra/" target="_blank" rel="noopener noreferrer" class="inline-block p-6 bg-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-transform duration-300">
+                           <svg class="contact-icon text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M9.198 21.5h4v-8.01h2.598l.397-3.018h-2.995V8.444c0-.873.243-1.468 1.494-1.468h1.598V4.077A17.52 17.52 0 0015.8 4c-2.36 0-3.974 1.446-3.974 4.095v2.228H9.198v3.018h2.628v8.01z" /></svg>
+                        </a>
+                        <h3 class="mt-5 text-xl font-semibold" style="color: #4A3F35;">ফেসবুক</h3>
+                        <p class="text-gray-600">প্রোফাইলে যান</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="text-white py-8" style="background-color: #4A3F35;">
+        <div class="container mx-auto px-6 text-center text-gray-300">
+            <p class="mb-2">&copy; ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
+            <p>ডিজাইন ও ডেভেলপমেন্ট - <a href="#creator" class="font-semibold hover:underline" style="color: #EAE0D5;">রিয়াদ হোসেন হুযাইফা</a></p>
+        </div>
+    </footer>
+
+    <!-- AOS (Animate On Scroll) Library Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // --- চূড়ান্ত এবং নির্ভরযোগ্য লোডার স্ক্রিপ্ট ---
+        const preloader = document.getElementById('preloader');
+        const loaderPercentage = document.getElementById('loader-percentage');
+        const progressBar = document.getElementById('progress-bar');
+        
+        let progress = 0;
+        // একটি কৃত্রিম লোডিং ইফেক্ট, যা দ্রুত সম্পন্ন হবে
+        const interval = setInterval(() => {
+            progress += Math.random() * 15; // দ্রুত বাড়ানোর জন্য মান পরিবর্তন
+            if (progress > 100) {
+                progress = 100;
+            }
+            loaderPercentage.textContent = `${Math.round(progress)}%`;
+            progressBar.style.width = `${progress}%`;
+
+            if (progress === 100) {
+                clearInterval(interval);
+            }
+        }, 100); // সময় কমানো হয়েছে
+
+        // window.onload নিশ্চিত করে যে ছবিসহ সকল কনটেন্ট লোড হয়েছে
+        window.onload = function() {
+            clearInterval(interval);
+            loaderPercentage.textContent = `100%`;
+            progressBar.style.width = `100%`;
+
+            // অল্প সময় পর লোডারটি fade out হবে
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 500); 
+            
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50,
+            });
+        };
+
+        // --- Mobile menu toggle script ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
