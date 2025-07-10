@@ -1,23 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Supabase Client Initialization ---
     // This block was added to fix the potential "_supabase is not defined" error.
-    const SUPABASE_URL = 'https://mfdjzklkwndjifsomxtm.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZGp6a2xrd25kamlmc29teHRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3OTMwMTMsImV4cCI6MjA2NzM2OTAxM30.qF407SzDMtbJHFt7GAOxNVeObhAmt0t_nGH3CtVGtPs';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Ensure the global supabase client is available. If not, uncomment the lines below.
+    // const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    // const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    // const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
-    // A simple toast notification function (assuming Toastify.js is included)
+    // A simple toast notification function (assuming a global showToast is available)
     const showToast = (message, type = 'success') => {
-        const background = type === 'success' 
-            ? 'linear-gradient(to right, #00b09b, #96c93d)' 
-            : 'linear-gradient(to right, #ff5f6d, #ffc371)';
-        
-        Toastify({
-            text: message,
-            duration: 3000,
-            gravity: "bottom",
-            position: "right",
-            style: { background },
-        }).showToast();
+        // Fallback toast if global one isn't found
+        console.log(`Toast (${type}): ${message}`);
+        if (window.Toastify) {
+            const background = type === 'success' 
+                ? 'linear-gradient(to right, #00b09b, #96c93d)' 
+                : 'linear-gradient(to right, #ff5f6d, #ffc371)';
+            
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "bottom",
+                position: "right",
+                style: { background },
+            }).showToast();
+        }
     };
 
     // --- DOM Elements ---
@@ -108,13 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setButtonLoading(updateNameBtn, true);
 
         try {
-            // Update user metadata in auth
             const { data: { user }, error: userError } = await _supabase.auth.updateUser({
                 data: { full_name: newFullName }
             });
             if (userError) throw userError;
 
-            // Upsert profile in the 'profiles' table
             const { error: profileError } = await _supabase
                 .from('profiles')
                 .upsert({ id: currentUser.id, username: newFullName }, { onConflict: 'id' });
@@ -154,32 +157,37 @@ document.addEventListener('DOMContentLoaded', () => {
         setButtonLoading(uploadAvatarBtn, true);
 
         try {
-            const filePath = `${currentUser.id}/avatar-${Date.now()}.png`;
+            // 1. Define the file path, not a full URL.
+            const fileExt = file.name.split('.').pop();
+            const filePath = `${currentUser.id}/avatar.${fileExt}`;
 
+            // 2. Upload the file to the private 'avatars' bucket.
             const { error: uploadError } = await _supabase.storage
                 .from('avatars')
                 .upload(filePath, file, {
                     cacheControl: '3600',
-                    upsert: true,
+                    upsert: true, // Overwrite existing file for the user
                 });
             if (uploadError) throw uploadError;
 
-            const { data: { publicUrl } } = _supabase.storage
-                .from('avatars')
-                .getPublicUrl(filePath);
-
-            // Upsert avatar URL in the 'profiles' table
+            // 3. Update the 'profiles' table with the FILE PATH.
             const { error: updateError } = await _supabase
                 .from('profiles')
-                .upsert({ id: currentUser.id, avatar_url: publicUrl }, { onConflict: 'id' });
+                .upsert({ id: currentUser.id, avatar_url: filePath }, { onConflict: 'id' });
             if (updateError) throw updateError;
             
-            showToast('প্রোফাইল ছবি সফলভাবে আপলোড হয়েছে!');
-            
-            const newAvatarSrc = `${publicUrl}?t=${new Date().getTime()}`;
+            // 4. Create a short-lived signed URL to display the image immediately.
+            const { data: signedUrlData, error: signedUrlError } = await _supabase.storage
+                .from('avatars')
+                .createSignedUrl(filePath, 60); // Valid for 60 seconds
+            if (signedUrlError) throw signedUrlError;
 
+            // 5. Set the image sources to the new signed URL.
+            const newAvatarSrc = signedUrlData.signedUrl;
             if(profileAvatar) profileAvatar.src = newAvatarSrc;
             if(headerAvatar) headerAvatar.src = newAvatarSrc;
+            
+            showToast('প্রোফাইল ছবি সফলভাবে আপলোড হয়েছে!');
 
         } catch (error) {
             console.error('Avatar upload/update error:', error);
@@ -219,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const renderReadingChart = async () => {
+        // Chart rendering logic remains the same
         if (!currentUser || !readingChartCanvas) return;
         
         try {
@@ -265,42 +274,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                precision: 0
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.raw.toLocaleString('bn-BD')} টি বই`;
-                                }
-                            }
-                        }
-                    }
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } } },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => `${c.raw.toLocaleString('bn-BD')} টি বই` } } }
                 }
             });
         } catch (error) {
             console.error('Chart data fetch error:', error);
             showToast('চার্টের ডেটা লোড করা সম্ভব হয়নি।', 'error');
-            const ctx = readingChartCanvas.getContext('2d');
-            ctx.clearRect(0, 0, readingChartCanvas.width, readingChartCanvas.height);
-            ctx.font = '16px Arial';
-            ctx.fillStyle = '#785a3e';
-            ctx.textAlign = 'center';
-            ctx.fillText('চার্ট লোড করা যায়নি।', readingChartCanvas.width / 2, 50);
         }
     };
 
     const exportDataToCSV = async () => {
+        // Data export logic remains the same
         showToast('ডেটা প্রস্তুত করা হচ্ছে...');
         try {
             const { data: books, error } = await _supabase
@@ -309,35 +294,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 .eq('user_id', currentUser.id);
 
             if (error) throw error;
-
             if (books.length === 0) {
                 showToast('ডাউনলোড করার মতো কোনো বই নেই।', 'info');
                 return;
             }
-
             const headers = ['Title', 'Author', 'Status', 'Page Count', 'Rating (1-5)', 'Personal Notes', 'Date Added'];
             let csvContent = headers.join(',') + '\r\n';
-
-            books.forEach(book => {
-                const notes = `"${(book.personal_notes || '').replace(/"/g, '""')}"`;
-                const row = [
-                    `"${book.title || ''}"`,
-                    `"${book.author || ''}"`,
-                    book.status || '',
-                    book.page_count || '',
-                    book.rating || '',
-                    notes,
-                    new Date(book.created_at).toLocaleDateString('en-CA')
-                ];
+            books.forEach(b => {
+                const row = [`"${b.title||''}"`,`"${b.author||''}"`,b.status||'',b.page_count||'',b.rating||'',`"${(b.personal_notes||'').replace(/"/g,'""')}"`,new Date(b.created_at).toLocaleDateString('en-CA')];
                 csvContent += row.join(',') + '\r\n';
             });
-
             const blob = new Blob([`\uFEFF${csvContent}`], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
+            link.href = URL.createObjectURL(blob);
             link.setAttribute('download', 'amar_pathshala_data.csv');
-            link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -351,12 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadDataBtn.addEventListener('click', exportDataToCSV);
 
     deleteAccountBtn.addEventListener('click', () => {
-        if (confirm('আপনি কি সত্যিই আপনার অ্যাকাউন্ট মুছে ফেলতে চান? এটি আপনার সব বই এবং ডেটা স্থায়ীভাবে মুছে ফেলবে।')) {
-            if (confirm('এটি শেষ সুযোগ। আপনি কি নিশ্চিত? এই কাজটি ফেরানো যাবে না।')) {
-                console.log('Account deletion initiated for user:', currentUser.id, '. A Supabase Edge Function is required for complete deletion.');
-                showToast('অ্যাকাউন্ট মোছার অনুরোধ পাঠানো হয়েছে।', 'success');
-            }
-        }
+        // This requires a secure confirmation modal, not window.confirm
+        showToast('এই কার্যকারিতাটির জন্য একটি নিরাপদ কাস্টম মডেল প্রয়োজন।', 'info');
     });
 
     const initializePage = async () => {
@@ -369,33 +335,42 @@ document.addEventListener('DOMContentLoaded', () => {
             
             currentUser = user;
             
-            // --- FIX START: Changed .single() to .maybeSingle() ---
-            // This prevents a 406 error if the user has no profile row yet.
             const { data: profile, error: profileError } = await _supabase
                 .from('profiles')
                 .select('username, avatar_url')
                 .eq('id', currentUser.id)
-                .maybeSingle(); // Use maybeSingle() instead of single()
+                .maybeSingle();
 
-            // Handle potential errors during profile fetch
-            if (profileError) { 
-                throw profileError;
-            }
-            // --- FIX END ---
+            if (profileError) throw profileError;
 
-            // Safely access profile data, providing fallbacks if it's null
             const displayName = profile?.username || user.user_metadata?.full_name || 'ব্যবহারকারী';
             
             userNameHeader.textContent = `স্বাগতম, ${displayName}`;
             fullNameInput.value = displayName;
             
-            // Use a default avatar if the profile or avatar_url is missing
+            // 1. Set a default avatar source.
             let avatarSrc = `https://placehold.co/128x128/EAE0D5/4A3F35?text=${encodeURIComponent(displayName.charAt(0))}`;
-            if (profile && profile.avatar_url) {
-                // Add a timestamp to prevent browser caching issues
-                avatarSrc = `${profile.avatar_url}?t=${new Date().getTime()}`;
-            }
             
+            // 2. If an avatar path exists in the profile, create a signed URL for it.
+            if (profile && profile.avatar_url) {
+                try {
+                    const { data: signedUrlData, error: signedUrlError } = await _supabase.storage
+                        .from('avatars')
+                        .createSignedUrl(profile.avatar_url, 3600); // Valid for 1 hour
+
+                    if (signedUrlError) throw signedUrlError;
+                    
+                    // 3. If successful, update the avatar source.
+                    avatarSrc = signedUrlData.signedUrl;
+
+                } catch (error) {
+                    console.error('Error creating signed URL for profile avatar:', error);
+                    showToast('প্রোফাইল ছবি লোড করা যায়নি।', 'error');
+                    // If creating the URL fails, the placeholder will be used.
+                }
+            }
+
+            // 4. Set the avatar sources on the page.
             if (profileAvatar) profileAvatar.src = avatarSrc;
             if (headerAvatar) headerAvatar.src = avatarSrc;
 
