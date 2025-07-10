@@ -14,6 +14,8 @@ body {
     padding: 2rem;
     border-radius: 0.75rem; /* 12px */
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    position: relative; /* Added for loader positioning */
+    min-height: 50vh; /* Ensure it has some height for the loader to appear in */
 }
 
 /* --- Google Books সার্চ রেজাল্টের জন্য স্টাইল --- */

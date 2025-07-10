@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchResultsContainer = document.getElementById('search-results');
     const librarySearchInput = document.getElementById('library-search-input');
     const statusFilter = document.getElementById('status-filter');
+    const loader = document.getElementById('loader');
+    const emptyState = document.getElementById('empty-state');
+    const libraryControls = document.getElementById('library-controls');
 
     // --- Goal Elements ---
     const goalTitle = document.getElementById('goal-title');
@@ -60,46 +63,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Display Books on the Page ---
     const displayBooks = (booksToDisplay) => {
         booksContainer.innerHTML = ''; 
-        if (booksToDisplay.length === 0) {
-            booksContainer.innerHTML = `<p class="text-lg text-gray-500 col-span-full text-center">কোনো বই পাওয়া যায়নি। ভিন্ন কিছু দিয়ে চেষ্টা করুন।</p>`;
-        } else {
-            booksToDisplay.forEach(book => {
-                const bookCard = document.createElement('div');
-                bookCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300';
-                const coverImageUrl = book.cover_image_url || `https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover`;
-                const statusText = statusMap[book.status] || 'N/A';
-                const pageCountText = book.page_count ? `${book.page_count.toLocaleString('bn-BD')} পৃষ্ঠা` : '';
-                bookCard.innerHTML = `
-                    <img src="${coverImageUrl}" alt="${book.title} এর কভার" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover';">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-[#4A3F35] flex-grow">${book.title}</h3>
-                        <p class="text-md text-gray-600 mt-1 mb-3"> - ${book.author}</p>
-                        <div class="mt-auto pt-3 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
-                            <span class="font-semibold text-[#785A3E]">${statusText}</span>
-                            <span>${pageCountText}</span>
-                        </div>
+        booksToDisplay.forEach(book => {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300';
+            const coverImageUrl = book.cover_image_url || `https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover`;
+            const statusText = statusMap[book.status] || 'N/A';
+            const pageCountText = book.page_count ? `${book.page_count.toLocaleString('bn-BD')} পৃষ্ঠা` : '';
+            bookCard.innerHTML = `
+                <img src="${coverImageUrl}" alt="${book.title} এর কভার" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover';">
+                <div class="p-5 flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-[#4A3F35] flex-grow">${book.title}</h3>
+                    <p class="text-md text-gray-600 mt-1 mb-3"> - ${book.author}</p>
+                    <div class="mt-auto pt-3 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
+                        <span class="font-semibold text-[#785A3E]">${statusText}</span>
+                        <span>${pageCountText}</span>
                     </div>
-                    <div class="p-3 bg-gray-50 border-t flex justify-end gap-2">
-                        <button class="edit-btn" data-id="${book.id}">সম্পাদনা</button>
-                        <button class="delete-btn" data-id="${book.id}">মুছে ফেলুন</button>
-                    </div>
-                `;
-                booksContainer.appendChild(bookCard);
-            });
-        }
+                </div>
+                <div class="p-3 bg-gray-50 border-t flex justify-end gap-2">
+                    <button class="edit-btn" data-id="${book.id}">সম্পাদনা</button>
+                    <button class="delete-btn" data-id="${book.id}">মুছে ফেলুন</button>
+                </div>
+            `;
+            booksContainer.appendChild(bookCard);
+        });
     };
     
     // --- Filter and Search Logic ---
     const applyFilters = () => {
         const searchTerm = librarySearchInput.value.toLowerCase();
         const selectedStatus = statusFilter.value;
+
+        if (!localBooks) localBooks = [];
+
         const filteredBooks = localBooks.filter(book => {
             const titleMatch = book.title.toLowerCase().includes(searchTerm);
             const authorMatch = book.author.toLowerCase().includes(searchTerm);
             const statusMatch = selectedStatus === 'all' || book.status === selectedStatus;
             return (titleMatch || authorMatch) && statusMatch;
         });
-        displayBooks(filteredBooks);
+
+        if (filteredBooks.length > 0) {
+            emptyState.classList.add('hidden');
+            booksContainer.classList.remove('hidden');
+            displayBooks(filteredBooks);
+        } else {
+            // This handles the "no search results" case
+            booksContainer.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyState.querySelector('h3').textContent = 'কোনো বই পাওয়া যায়নি';
+            emptyState.querySelector('p').textContent = 'আপনার ফিল্টার বা সার্চের সাথে মেলে এমন কোনো বই নেই। ভিন্ন কিছু দিয়ে চেষ্টা করুন।';
+        }
     };
 
     librarySearchInput.addEventListener('input', applyFilters);
@@ -142,22 +155,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Fetch Books from Supabase ---
     const fetchBooks = async () => {
         if (!currentUser) return;
-        booksContainer.innerHTML = `<p class="text-lg text-gray-500 col-span-full text-center">বই লোড হচ্ছে...</p>`;
-        const { data, error } = await _supabase
-            .from('books')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .order('created_at', { ascending: false });
 
-        if (error) {
-            console.error('বই আনতে সমস্যা হয়েছে:', error);
-            booksContainer.innerHTML = `<p class="text-lg text-red-500 col-span-full text-center">বই লোড করা সম্ভব হয়নি।</p>`;
-            return;
+        loader.classList.remove('hidden');
+        booksContainer.classList.add('hidden');
+        libraryControls.classList.add('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+            const { data, error } = await _supabase
+                .from('books')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('বই আনতে সমস্যা হয়েছে:', error);
+                emptyState.classList.remove('hidden');
+                emptyState.querySelector('h3').textContent = 'একটি সমস্যা হয়েছে';
+                emptyState.querySelector('p').textContent = 'বই লোড করা সম্ভব হয়নি। অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন।';
+                return;
+            }
+
+            localBooks = data;
+
+            if (localBooks.length === 0) {
+                libraryControls.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.querySelector('h3').textContent = 'আপনার পাঠশালা এখনো খালি';
+                emptyState.querySelector('p').textContent = 'আপনি এখনো কোনো বই যোগ করেননি। "নতুন বই যোগ করুন" বাটনে ক্লিক করে আপনার প্রথম বইটি যোগ করুন!';
+            } else {
+                libraryControls.classList.remove('hidden');
+                applyFilters();
+            }
+
+            await fetchAndDisplayGoal();
+        } catch (err) {
+            console.error('Fetch books failed:', err);
+            emptyState.classList.remove('hidden');
+            emptyState.querySelector('h3').textContent = 'একটি অপ্রত্যাশিত সমস্যা হয়েছে';
+            emptyState.querySelector('p').textContent = 'ডেটা লোড করা সম্ভব হয়নি।';
+        } finally {
+            loader.classList.add('hidden');
         }
-
-        localBooks = data;
-        applyFilters();
-        await fetchAndDisplayGoal(); // Fetch goal after books are loaded
     };
 
     // --- Modal Interactivity ---
@@ -197,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Goal Modal Logic ---
     setGoalBtn.addEventListener('click', async () => {
-        // Pre-fill with existing goal if it exists
         const currentYear = new Date().getFullYear();
         const { data } = await _supabase.from('goals').select('target_books').eq('user_id', currentUser.id).eq('year', currentYear).single();
         if (data) {
