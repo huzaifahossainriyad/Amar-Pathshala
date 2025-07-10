@@ -35,13 +35,31 @@
     <main class="container mx-auto px-6 py-12">
         <!-- Main Content: Bookshelf -->
         <section id="bookshelf">
-            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center" style="color: #4A3F35;">আপনার বইয়ের তাক</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center" style="color: #4A3F35;">আপনার বইয়ের তাক</h1>
             
-            <!-- Add New Book Button -->
-            <div class="text-center mb-10">
+            <div class="text-center mb-8">
                 <button id="add-book-btn" class="bg-[#785A3E] hover:bg-[#664c32] text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:-translate-y-0.5 shadow-lg">
                     নতুন বই যোগ করুন
                 </button>
+            </div>
+
+            <!-- Library Search and Filter Section -->
+            <div id="library-controls" class="mb-8 p-4 bg-white/50 rounded-lg shadow-md">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label for="library-search-input" class="sr-only">বই খুঁজুন</label>
+                        <input type="text" id="library-search-input" placeholder="আপনার বই খুঁজুন (নাম বা লেখক দিয়ে)..." class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white transition">
+                    </div>
+                    <div>
+                        <label for="status-filter" class="sr-only">স্ট্যাটাস ফিল্টার</label>
+                        <select id="status-filter" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white transition">
+                            <option value="all">সব বই</option>
+                            <option value="reading">পড়ছি</option>
+                            <option value="read">পড়া শেষ</option>
+                            <option value="want_to_read">পড়তে চাই</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- Books Container -->
@@ -66,7 +84,6 @@
                 <button id="close-modal-btn-icon" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
             </div>
             
-            <!-- Google Books Search Section -->
             <div class="mb-6 border-b border-gray-300 pb-6">
                 <p class="text-md text-[#4A3F35] mb-3">বই খুঁজে স্বয়ংক্রিয়ভাবে তথ্য পূরণ করুন:</p>
                 <div class="flex gap-2">
@@ -76,12 +93,9 @@
                         <div class="spinner hidden"></div>
                     </button>
                 </div>
-                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto">
-                    <!-- Search results will be populated here -->
-                </div>
+                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto"></div>
             </div>
 
-            <!-- Manual Entry Form -->
             <form id="add-book-form" class="space-y-4">
                 <input type="hidden" id="edit-book-id">
                 <div>
