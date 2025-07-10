@@ -14,6 +14,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentUser = null;
 
+    // --- Toast Notification Helper ---
+    const showToast = (message, type = 'success') => {
+        const background = type === 'success' 
+            ? 'linear-gradient(to right, #00b09b, #96c93d)' 
+            : 'linear-gradient(to right, #ff5f6d, #ffc371)';
+        
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "bottom",
+            position: "right",
+            style: { background },
+        }).showToast();
+    };
+
     /**
      * ব্যবহারকারীর পড়ার পরিসংখ্যান গণনা করে এবং পৃষ্ঠায় প্রদর্শন করে।
      */
@@ -62,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newPassword = newPasswordInput.value.trim();
 
         if (newPassword.length < 6) {
-            alert('পাসওয়ার্ড অবশ্যই কমপক্ষে ৬ অক্ষরের হতে হবে।');
+            showToast('পাসওয়ার্ড অবশ্যই কমপক্ষে ৬ অক্ষরের হতে হবে।', 'error');
             return;
         }
 
@@ -85,9 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (error) {
             console.error('পাসওয়ার্ড আপডেট করতে সমস্যা হয়েছে:', error);
-            alert(`ত্রুটি: ${error.message}`);
+            showToast(`ত্রুটি: ${error.message}`, 'error');
         } else {
-            alert('পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!');
+            showToast('পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!');
             passwordUpdateForm.reset();
         }
     });

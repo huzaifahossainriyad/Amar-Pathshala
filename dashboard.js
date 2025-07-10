@@ -19,10 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookSearchInput = document.getElementById('book-search-input');
     const bookSearchBtn = document.getElementById('book-search-btn');
     const searchResultsContainer = document.getElementById('search-results');
-    
-    // Library Filter Elements
     const librarySearchInput = document.getElementById('library-search-input');
     const statusFilter = document.getElementById('status-filter');
+
+    // --- Goal Elements ---
+    const goalTitle = document.getElementById('goal-title');
+    const goalProgressText = document.getElementById('goal-progress-text');
+    const goalProgressBarContainer = document.getElementById('goal-progress-bar-container');
+    const setGoalBtn = document.getElementById('set-goal-btn');
+    const goalModal = document.getElementById('goal-modal');
+    const goalForm = document.getElementById('goal-form');
+    const goalInput = document.getElementById('goal-input');
+    const closeGoalModalBtn = document.getElementById('close-goal-modal-btn');
 
     let currentUser = null;
     let localBooks = []; // সব বইয়ের মাস্টার লিস্ট
@@ -32,22 +40,35 @@ document.addEventListener('DOMContentLoaded', () => {
         'reading': 'পড়ছি',
         'read': 'পড়া শেষ'
     };
+    
+    // --- Toast Notification Helpers ---
+    const showToast = (message, type = 'success') => {
+        const background = type === 'success' 
+            ? 'linear-gradient(to right, #00b09b, #96c93d)' 
+            : 'linear-gradient(to right, #ff5f6d, #ffc371)';
+        
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "bottom",
+            position: "right",
+            style: { background },
+        }).showToast();
+    };
+
 
     // --- Display Books on the Page ---
     const displayBooks = (booksToDisplay) => {
         booksContainer.innerHTML = ''; 
-
         if (booksToDisplay.length === 0) {
             booksContainer.innerHTML = `<p class="text-lg text-gray-500 col-span-full text-center">কোনো বই পাওয়া যায়নি। ভিন্ন কিছু দিয়ে চেষ্টা করুন।</p>`;
         } else {
             booksToDisplay.forEach(book => {
                 const bookCard = document.createElement('div');
                 bookCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300';
-                
                 const coverImageUrl = book.cover_image_url || `https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover`;
                 const statusText = statusMap[book.status] || 'N/A';
-                const pageCountText = book.page_count ? `${book.page_count} পৃষ্ঠা` : '';
-
+                const pageCountText = book.page_count ? `${book.page_count.toLocaleString('bn-BD')} পৃষ্ঠা` : '';
                 bookCard.innerHTML = `
                     <img src="${coverImageUrl}" alt="${book.title} এর কভার" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover';">
                     <div class="p-5 flex flex-col flex-grow">
@@ -72,27 +93,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const applyFilters = () => {
         const searchTerm = librarySearchInput.value.toLowerCase();
         const selectedStatus = statusFilter.value;
-
         const filteredBooks = localBooks.filter(book => {
             const titleMatch = book.title.toLowerCase().includes(searchTerm);
             const authorMatch = book.author.toLowerCase().includes(searchTerm);
             const statusMatch = selectedStatus === 'all' || book.status === selectedStatus;
-
             return (titleMatch || authorMatch) && statusMatch;
         });
-
         displayBooks(filteredBooks);
     };
 
     librarySearchInput.addEventListener('input', applyFilters);
     statusFilter.addEventListener('change', applyFilters);
 
+    // --- Fetch and Display Reading Goal ---
+    const fetchAndDisplayGoal = async () => {
+        if (!currentUser) return;
+
+        const currentYear = new Date().getFullYear();
+        const bengaliYear = currentYear.toLocaleString('bn-BD', { useGrouping: false });
+        const completedBooks = localBooks.filter(book => book.status === 'read').length;
+
+        const { data: goalData, error: goalError } = await _supabase
+            .from('goals')
+            .select('target_books')
+            .eq('user_id', currentUser.id)
+            .eq('year', currentYear)
+            .single();
+
+        if (goalError && goalError.code !== 'PGRST116') {
+            console.error('Error fetching goal:', goalError);
+            goalTitle.textContent = 'লক্ষ্য আনতে সমস্যা হয়েছে।';
+            return;
+        }
+
+        if (goalData) {
+            const target = goalData.target_books;
+            const progressPercentage = target > 0 ? (completedBooks / target) * 100 : 0;
+            goalTitle.textContent = `${bengaliYear} সালের পড়ার লক্ষ্য`;
+            goalProgressText.textContent = `${completedBooks.toLocaleString('bn-BD')} / ${target.toLocaleString('bn-BD')} টি বই`;
+            goalProgressBarContainer.innerHTML = `<div class="goal-progress-bar-inner" style="width: ${Math.min(progressPercentage, 100)}%;"></div>`;
+        } else {
+            goalTitle.textContent = `${bengaliYear} সালের পড়ার লক্ষ্য`;
+            goalProgressText.textContent = 'এই বছরের জন্য কোনো লক্ষ্য ঠিক করা হয়নি।';
+            goalProgressBarContainer.innerHTML = '';
+        }
+    };
+
     // --- Fetch Books from Supabase ---
     const fetchBooks = async () => {
         if (!currentUser) return;
-        
         booksContainer.innerHTML = `<p class="text-lg text-gray-500 col-span-full text-center">বই লোড হচ্ছে...</p>`;
-
         const { data, error } = await _supabase
             .from('books')
             .select('*')
@@ -105,8 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        localBooks = data; // মাস্টার লিস্ট আপডেট করা
-        applyFilters(); // ফিল্টারসহ বই দেখানো
+        localBooks = data;
+        applyFilters();
+        await fetchAndDisplayGoal(); // Fetch goal after books are loaded
     };
 
     // --- Modal Interactivity ---
@@ -143,6 +194,58 @@ document.addEventListener('DOMContentLoaded', () => {
     addBookModal.addEventListener('click', (e) => {
         if (e.target === addBookModal) hideModal();
     });
+    
+    // --- Goal Modal Logic ---
+    setGoalBtn.addEventListener('click', async () => {
+        // Pre-fill with existing goal if it exists
+        const currentYear = new Date().getFullYear();
+        const { data } = await _supabase.from('goals').select('target_books').eq('user_id', currentUser.id).eq('year', currentYear).single();
+        if (data) {
+            goalInput.value = data.target_books;
+        } else {
+            goalInput.value = '';
+        }
+        goalModal.classList.remove('hidden');
+    });
+
+    closeGoalModalBtn.addEventListener('click', () => {
+        goalModal.classList.add('hidden');
+    });
+    
+    goalModal.addEventListener('click', (e) => {
+        if (e.target === goalModal) {
+            goalModal.classList.add('hidden');
+        }
+    });
+
+    goalForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newGoal = parseInt(goalInput.value, 10);
+        if (!newGoal || newGoal < 1) {
+            showToast('অনুগ্রহ করে একটি সঠিক সংখ্যা দিন।', 'error');
+            return;
+        }
+        const currentYear = new Date().getFullYear();
+        const { error } = await _supabase
+            .from('goals')
+            .upsert({
+                user_id: currentUser.id,
+                year: currentYear,
+                target_books: newGoal
+            }, {
+                onConflict: 'user_id, year'
+            });
+
+        if (error) {
+            console.error('Error setting goal:', error);
+            showToast('লক্ষ্য ঠিক করতে সমস্যা হয়েছে।', 'error');
+        } else {
+            showToast('আপনার পড়ার লক্ষ্য সফলভাবে সেট করা হয়েছে!');
+            goalModal.classList.add('hidden');
+            await fetchAndDisplayGoal();
+        }
+    });
+
 
     // --- Google Books API Search ---
     const displayGBSearchResults = (books) => {
@@ -220,9 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { error } = await _supabase.from('books').delete().eq('id', bookId);
                 if (error) {
                     console.error('Delete Error:', error);
-                    alert('বইটি মোছা সম্ভব হয়নি।');
+                    showToast('বইটি মোছা সম্ভব হয়নি।', 'error');
                 } else {
-                    fetchBooks(); // তালিকা রিফ্রেশ করা
+                    showToast('বইটি সফলভাবে মুছে ফেলা হয়েছে');
+                    fetchBooks();
                 }
             }
         }
@@ -256,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const bookIdToEdit = document.getElementById('edit-book-id').value;
         if (!bookData.title || !bookData.author) {
-            alert('অনুগ্রহ করে বইয়ের নাম এবং লেখকের নাম দিন।');
+            showToast('অনুগ্রহ করে বইয়ের নাম এবং লেখকের নাম দিন।', 'error');
             return;
         }
         const saveButtonText = saveBookBtn.querySelector('.button-text');
@@ -265,20 +369,27 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButtonText.classList.add('hidden');
         saveSpinner.classList.remove('hidden');
         let error;
+        let successMessage = '';
+
         if (bookIdToEdit) {
             const { error: updateError } = await _supabase.from('books').update(bookData).eq('id', bookIdToEdit);
             error = updateError;
+            successMessage = 'বইটি সফলভাবে আপডেট করা হয়েছে';
         } else {
             const { error: insertError } = await _supabase.from('books').insert([bookData]);
             error = insertError;
+            successMessage = 'বইটি সফলভাবে যোগ করা হয়েছে';
         }
+
         saveBookBtn.disabled = false;
         saveButtonText.classList.remove('hidden');
         saveSpinner.classList.add('hidden');
+
         if (error) {
             console.error('Save/Update Error:', error);
-            alert('কার্যক্রমটি সম্পন্ন করা সম্ভব হয়নি।');
+            showToast('কার্যক্রমটি সম্পন্ন করা সম্ভব হয়নি।', 'error');
         } else {
+            showToast(successMessage);
             hideModal();
             fetchBooks();
         }
