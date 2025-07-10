@@ -20,7 +20,7 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="dashboard.css">
 </head>
-<body class="antialiased">
+<body class="antialiased bg-[#FDF8F0]">
 
     <!-- Header Section -->
     <header id="header" class="bg-[#FDF8F0]/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 transition-all duration-300">
@@ -28,7 +28,6 @@
             <a href="#" class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">আমার পাঠশালা</a>
             <div class="flex items-center space-x-4 md:space-x-6">
                 <span id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] font-medium hidden sm:block">স্বাগতম...</span>
-                <!-- *** সংশোধিত: ব্যবহারকারীর প্রোফাইল ছবি দৃশ্যমান করা হয়েছে *** -->
                 <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300">
                 <a href="./profile.html" class="text-[#4A3F35] hover:text-[#785A3E] transition-colors" aria-label="প্রোফাইল ও সেটিংস">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -45,10 +44,10 @@
     </header>
 
     <main class="container mx-auto px-6 py-12">
-        <section id="bookshelf">
+        <section id="bookshelf" class="relative">
             <!-- Loading Indicator -->
-            <div id="loader" class="hidden absolute inset-0 bg-white/50 flex items-center justify-center z-20 rounded-lg">
-                <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-[#785A3E]"></div>
+            <div id="loader" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60]">
+                <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-white"></div>
             </div>
 
             <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center" style="color: #4A3F35;">আপনার বইয়ের তাক</h1>
@@ -82,7 +81,7 @@
                             <option value="all">সব বই</option>
                             <option value="reading">পড়ছি</option>
                             <option value="read">পড়া শেষ</option>
-                            <option value="want_to_read">পড়তে চাই</option>
+                            <option value="want_to_read">পড়তে চাই (অগ্রাধিকার)</option>
                         </select>
                     </div>
                 </div>

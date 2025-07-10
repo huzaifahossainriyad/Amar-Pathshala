@@ -35,20 +35,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let localBooks = []; 
 
     const statusMap = {
-        'want_to_read': 'পড়তে চাই',
+        'want_to_read': 'পড়তে চাই',
         'reading': 'পড়ছি',
         'read': 'পড়া শেষ'
     };
     
-    // All other functions (displayBooks, applyFilters, fetchAndDisplayGoal, etc.) remain unchanged.
-    // They are included here for completeness.
-    
+    // --- Function: Display Books ---
+    // Displays book cards in the container.
+    // Dynamically adds reorder buttons for the 'want_to_read' view.
     const displayBooks = (booksToDisplay) => {
         booksContainer.innerHTML = ''; 
-        booksToDisplay.forEach(book => {
-            const bookLink = document.createElement('a');
-            bookLink.href = `book-details.html?id=${book.id}`;
-            bookLink.className = 'book-card-link group';
+        const isTbrView = statusFilter.value === 'want_to_read';
+
+        booksToDisplay.forEach((book, index) => {
+            // Use a simple div for TBR view to avoid link navigation conflicts with buttons.
+            // Use an anchor tag for all other views to link to book details.
+            const cardWrapper = document.createElement(isTbrView ? 'div' : 'a');
+            
+            cardWrapper.className = 'group relative'; // Add relative positioning for absolute child buttons
+            if (!isTbrView) {
+                cardWrapper.href = `book-details.html?id=${book.id}`;
+            }
 
             const bookCard = document.createElement('div');
             bookCard.className = 'book-card bg-white/70 rounded-lg shadow-md overflow-hidden flex flex-col h-full transition-transform duration-300 transform group-hover:scale-105 group-hover:shadow-xl';
@@ -68,12 +75,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+
+            // If in TBR view, add the reorder buttons
+            if (isTbrView) {
+                const reorderControls = document.createElement('div');
+                reorderControls.className = 'absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300';
+                
+                // Up button (hidden if it's the first item)
+                const upButton = `
+                    <button class="tbr-up-btn bg-white/80 rounded-full p-1 shadow-md hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed" data-id="${book.id}" aria-label="Move Up" ${index === 0 ? 'disabled' : ''}>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg>
+                    </button>`;
+
+                // Down button (hidden if it's the last item)
+                const downButton = `
+                    <button class="tbr-down-btn bg-white/80 rounded-full p-1 shadow-md hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed" data-id="${book.id}" aria-label="Move Down" ${index === booksToDisplay.length - 1 ? 'disabled' : ''}>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+                    </button>`;
+
+                reorderControls.innerHTML = upButton + downButton;
+                bookCard.appendChild(reorderControls);
+            }
             
-            bookLink.appendChild(bookCard);
-            booksContainer.appendChild(bookLink);
+            cardWrapper.appendChild(bookCard);
+            booksContainer.appendChild(cardWrapper);
         });
     };
     
+    // --- Function: Apply Filters ---
+    // Filters and displays books based on search and status dropdown.
     const applyFilters = () => {
         const searchTerm = librarySearchInput.value.toLowerCase();
         const selectedStatus = statusFilter.value;
@@ -105,6 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
     librarySearchInput.addEventListener('input', applyFilters);
     statusFilter.addEventListener('change', applyFilters);
 
+    // --- Function: Fetch and Display Goal ---
+    // Fetches and renders the user's reading goal for the current year.
     const fetchAndDisplayGoal = async () => {
         if (!currentUser) return;
 
@@ -138,6 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- Function: Fetch Books ---
+    // Fetches all books for the current user from Supabase.
+    // **MODIFIED**: Now sorts by `tbr_order` to maintain priority.
     const fetchBooks = async () => {
         if (!currentUser) return;
 
@@ -151,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('books')
                 .select('*')
                 .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false });
+                .order('tbr_order', { ascending: true, nullsFirst: false }); // <-- SORTING LOGIC UPDATED HERE
 
             if (error) throw error;
 
@@ -175,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- Function: Modal Controls ---
     const showModal = () => {
         addBookModal.classList.remove('hidden');
         setTimeout(() => modalContent.classList.remove('scale-95', 'opacity-0'), 10);
@@ -203,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === addBookModal) hideModal();
     });
     
+    // --- Goal Modal Listeners ---
     setGoalBtn.addEventListener('click', async () => {
         const currentYear = new Date().getFullYear();
         const { data } = await _supabase.from('goals').select('target_books').eq('user_id', currentUser.id).eq('year', currentYear).maybeSingle();
@@ -236,8 +273,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Function: Handle Book Search ---
     const handleBookSearch = async () => {
-        // Book search logic remains the same
+        const query = bookSearchInput.value.trim();
+        if (!query) return;
+
+        const searchBtnText = bookSearchBtn.querySelector('.button-text');
+        const spinner = bookSearchBtn.querySelector('.spinner');
+        searchBtnText.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        bookSearchBtn.disabled = true;
+
+        try {
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&langRestrict=bn&maxResults=5`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            
+            searchResultsContainer.innerHTML = '';
+            if (data.items && data.items.length > 0) {
+                data.items.forEach(item => {
+                    const volumeInfo = item.volumeInfo;
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'p-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0';
+                    resultDiv.textContent = `${volumeInfo.title} - ${volumeInfo.authors ? volumeInfo.authors.join(', ') : 'Unknown Author'}`;
+                    resultDiv.addEventListener('click', () => {
+                        document.getElementById('book-title').value = volumeInfo.title || '';
+                        document.getElementById('book-author').value = volumeInfo.authors ? volumeInfo.authors.join(', ') : '';
+                        document.getElementById('book-cover-url').value = volumeInfo.imageLinks?.thumbnail || '';
+                        document.getElementById('book-page-count').value = volumeInfo.pageCount || '';
+                        searchResultsContainer.innerHTML = '';
+                    });
+                    searchResultsContainer.appendChild(resultDiv);
+                });
+            } else {
+                searchResultsContainer.innerHTML = '<p class="p-3 text-gray-500">কোনো ফলাফল পাওয়া যায়নি।</p>';
+            }
+        } catch (error) {
+            console.error("Error searching books:", error);
+            searchResultsContainer.innerHTML = '<p class="p-3 text-red-500">অনুসন্ধানে সমস্যা হয়েছে।</p>';
+        } finally {
+            searchBtnText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+            bookSearchBtn.disabled = false;
+        }
     };
 
     bookSearchBtn.addEventListener('click', handleBookSearch);
@@ -248,10 +326,129 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Form: Add/Edit Book ---
+    // **MODIFIED**: Sets a default `tbr_order` for new 'want_to_read' books.
     addBookForm.addEventListener('submit', async (e) => {
-        // Add book form logic remains the same
+        e.preventDefault();
+        const saveBtnText = saveBookBtn.querySelector('.button-text');
+        const spinner = saveBookBtn.querySelector('.spinner');
+        saveBtnText.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        saveBookBtn.disabled = true;
+
+        try {
+            const formData = new FormData(addBookForm);
+            const bookId = document.getElementById('edit-book-id').value;
+            
+            const bookData = {
+                title: formData.get('book-title'),
+                author: formData.get('book-author'),
+                cover_image_url: formData.get('book-cover-url'),
+                page_count: parseInt(formData.get('book-page-count'), 10) || null,
+                status: formData.get('book-status'),
+                user_id: currentUser.id
+            };
+
+            // **NEW**: If the book is new and status is 'want_to_read',
+            // set tbr_order to the current timestamp to place it at the end.
+            if (!bookId && bookData.status === 'want_to_read') {
+                bookData.tbr_order = Date.now();
+            }
+
+            let response;
+            if (bookId) {
+                // This is an update, we don't change tbr_order here.
+                // It's handled by the reorder buttons.
+                response = await _supabase.from('books').update(bookData).eq('id', bookId).select();
+            } else {
+                // This is a new book.
+                response = await _supabase.from('books').insert(bookData).select();
+            }
+
+            const { error } = response;
+            if (error) throw error;
+
+            showToast(bookId ? 'বই সফলভাবে আপডেট করা হয়েছে!' : 'বই সফলভাবে যোগ করা হয়েছে!', 'success');
+            hideModal();
+            fetchBooks();
+
+        } catch (err) {
+            console.error('Save book failed:', err);
+            showToast('বই সেভ করা সম্ভব হয়নি।', 'error');
+        } finally {
+            saveBtnText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+            saveBookBtn.disabled = false;
+        }
     });
 
+    // --- NEW: Event Listener for Reordering Books ---
+    // Handles clicks on the up/down arrows in the 'want_to_read' view.
+    booksContainer.addEventListener('click', async (e) => {
+        const upBtn = e.target.closest('.tbr-up-btn');
+        const downBtn = e.target.closest('.tbr-down-btn');
+
+        if (!upBtn && !downBtn) return; // Exit if not a reorder button click
+
+        const button = upBtn || downBtn;
+        if (button.disabled) return; // Do nothing if button is disabled
+
+        const bookId = button.dataset.id;
+        const direction = upBtn ? 'up' : 'down';
+
+        // Get the currently displayed books to find correct indexes
+        const currentViewBooks = localBooks.filter(book => book.status === 'want_to_read');
+        
+        const currentIndex = currentViewBooks.findIndex(b => b.id == bookId);
+
+        if (currentIndex === -1) return;
+
+        const siblingIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+        // Boundary check
+        if (siblingIndex < 0 || siblingIndex >= currentViewBooks.length) {
+            return;
+        }
+
+        const bookA = currentViewBooks[currentIndex];
+        const bookB = currentViewBooks[siblingIndex];
+
+        // Swap the tbr_order values
+        const tempOrder = bookA.tbr_order;
+        bookA.tbr_order = bookB.tbr_order;
+        bookB.tbr_order = tempOrder;
+
+        loader.classList.remove('hidden'); // Show loader during DB operation
+
+        try {
+            const { error } = await _supabase
+                .from('books')
+                .upsert([
+                    { id: bookA.id, tbr_order: bookA.tbr_order },
+                    { id: bookB.id, tbr_order: bookB.tbr_order }
+                ]);
+
+            if (error) throw error;
+
+            // The localBooks array is now out of sync with the database order.
+            // Re-fetch to get the canonical state.
+            await fetchBooks();
+            showToast('বইয়ের অগ্রাধিকার পরিবর্তন করা হয়েছে।', 'success');
+
+        } catch (err) {
+            console.error('Reorder failed:', err);
+            showToast('অগ্রাধিকার পরিবর্তন করা সম্ভব হয়নি।', 'error');
+            // Revert local changes if DB update fails to avoid UI confusion
+            bookB.tbr_order = bookA.tbr_order;
+            bookA.tbr_order = tempOrder;
+        } finally {
+            loader.classList.add('hidden');
+        }
+    });
+
+
+    // --- Function: Check User and Initialize ---
+    // Checks for an active session and initializes the dashboard.
     const checkUserAndInitialize = async () => {
         const { data: { session } } = await _supabase.auth.getSession();
         if (session?.user) {
@@ -270,39 +467,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const displayName = profile?.username || currentUser.user_metadata?.full_name || 'ব্যবহারকারী';
             userWelcomeMessage.textContent = `স্বাগতম, ${displayName}`;
             
-            // --- SIGNED URL LOGIC ---
-            // 1. Set a default placeholder avatar.
             let avatarSrc = `https://placehold.co/40x40/EAE0D5/4A3F35?text=${encodeURIComponent(displayName.charAt(0))}`;
             
-            // 2. If a file path exists in the profile, try to create a signed URL.
             if (profile && profile.avatar_url) {
                 try {
                     const { data: signedUrlData, error: signedUrlError } = await _supabase.storage
                         .from('avatars')
-                        .createSignedUrl(profile.avatar_url, 3600); // Valid for 1 hour
+                        .createSignedUrl(profile.avatar_url, 3600); 
 
                     if (signedUrlError) throw signedUrlError;
                     
-                    // 3. If successful, use the signed URL as the source.
                     avatarSrc = signedUrlData.signedUrl;
 
                 } catch (error) {
                     console.error('Error creating signed URL for dashboard avatar:', error);
-                    // If it fails, the placeholder will be used.
                 }
             }
             
-            // 4. Set the final avatar source.
             if (headerAvatar) {
                 headerAvatar.src = avatarSrc;
             }
 
-            fetchBooks();
+            // Initial fetch of books
+            await fetchBooks();
         } else {
             window.location.replace('login.html');
         }
     };
     
+    // --- Logout Button Listener ---
     logoutButton.addEventListener('click', async () => {
         logoutButton.disabled = true;
         const { error } = await _supabase.auth.signOut();
@@ -314,5 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // --- Initializer Call ---
     checkUserAndInitialize();
 });
