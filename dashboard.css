@@ -1,24 +1,27 @@
-/* --- বেসিক এবং কাস্টম স্টাইল --- */
-body {
-    font-family: 'Tiro Bangla', serif;
-    background-color: #FDF8F0;
-    color: #4A3F35;
+/* --- সম্পাদনা এবং মুছে ফেলার বাটনের স্টাইল --- */
+.edit-btn, .delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    font-family: 'Tiro Bangla', serif; /* ফন্ট যোগ করা হলো */
 }
-/* লগআউট এবং সেভ বাটনের স্পিনার লোডার এর জন্য */
-.spinner {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #ffffff;
-    border-radius: 50%;
-    width: 1rem;
-    height: 1rem;
-    animation: spin 1s linear infinite;
+
+.edit-btn {
+    background-color: #3b82f6; /* নীল রঙ */
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-/* মডালের জন্য ট্রানজিশন */
-#add-book-modal {
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+
+.edit-btn:hover {
+    opacity: 0.8;
 }
-#add-book-modal.hidden {
-    opacity: 0;
-    visibility: hidden;
+
+.delete-btn {
+    background-color: #ef4444; /* লাল রঙ */
+}
+
+.delete-btn:hover {
+    opacity: 0.8;
 }

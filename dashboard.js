@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBookForm = document.getElementById('add-book-form');
     const booksContainer = document.getElementById('books-container');
     const saveBookBtn = document.getElementById('save-book-btn');
+    const modalTitle = document.getElementById('modal-title'); // মডালের টাইটেল এলিমেন্ট
 
     let currentUser = null;
+    let localBooks = []; // সব বই লোকালভাবে সংরক্ষণের জন্য
 
     const statusMap = {
         'want_to_read': 'পড়তে চাই',
@@ -34,15 +36,32 @@ document.addEventListener('DOMContentLoaded', () => {
             modalContent.classList.remove('scale-95', 'opacity-0');
         }, 10);
     };
+
     const hideModal = () => {
         modalContent.classList.add('scale-95', 'opacity-0');
         setTimeout(() => {
             addBookModal.classList.add('hidden');
             addBookForm.reset();
+            // মডাল লুকানোর সময় ফর্ম রিসেট করা
+            let hiddenInput = document.getElementById('edit-book-id');
+            if (hiddenInput) {
+                hiddenInput.value = '';
+            }
+            if(modalTitle) modalTitle.textContent = 'নতুন বই যোগ করুন';
         }, 300);
     };
 
-    addBookBtn.addEventListener('click', showModal);
+    // নতুন বই যোগ করার জন্য মডাল খোলা
+    addBookBtn.addEventListener('click', () => {
+        addBookForm.reset();
+        let hiddenInput = document.getElementById('edit-book-id');
+        if (hiddenInput) {
+            hiddenInput.value = '';
+        }
+        if(modalTitle) modalTitle.textContent = 'নতুন বই যোগ করুন';
+        showModal();
+    });
+
     closeModalBtn.addEventListener('click', hideModal);
     closeModalBtnIcon.addEventListener('click', hideModal);
     addBookModal.addEventListener('click', (e) => {
@@ -57,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         booksContainer.innerHTML = `<p class="text-lg text-gray-500 col-span-full text-center">বই লোড হচ্ছে...</p>`;
 
-        const { data: books, error } = await _supabase
+        const { data, error } = await _supabase
             .from('books')
             .select('*')
             .eq('user_id', currentUser.id)
@@ -69,12 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        localBooks = data; // লোকাল অ্যারেতে বইগুলো সেভ করা
         booksContainer.innerHTML = ''; 
 
-        if (books.length === 0) {
+        if (localBooks.length === 0) {
             booksContainer.innerHTML = `<p class="text-lg text-gray-500 col-span-full text-center">এখনো কোনো বই যোগ করা হয়নি। 'নতুন বই যোগ করুন' বাটনে ক্লিক করে শুরু করুন।</p>`;
         } else {
-            books.forEach(book => {
+            localBooks.forEach(book => {
                 const bookCard = document.createElement('div');
                 bookCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300';
                 
@@ -92,13 +112,67 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span>${pageCountText}</span>
                         </div>
                     </div>
+                    <div class="p-3 bg-gray-50 border-t flex justify-end gap-2">
+                        <button class="edit-btn" data-id="${book.id}">সম্পাদনা</button>
+                        <button class="delete-btn" data-id="${book.id}">মুছে ফেলুন</button>
+                    </div>
                 `;
                 booksContainer.appendChild(bookCard);
             });
         }
     };
 
-    // --- Save Data to Supabase ---
+    // --- Event Delegation for Edit and Delete ---
+    booksContainer.addEventListener('click', async (e) => {
+        // --- Delete Functionality ---
+        if (e.target.classList.contains('delete-btn')) {
+            const bookId = e.target.dataset.id;
+            if (confirm('আপনি কি সত্যিই এই বইটি মুছে ফেলতে চান?')) {
+                const { error } = await _supabase
+                    .from('books')
+                    .delete()
+                    .eq('id', bookId);
+
+                if (error) {
+                    console.error('বই মুছতে সমস্যা হয়েছে:', error);
+                    alert('বইটি মোছা সম্ভব হয়নি।');
+                } else {
+                    fetchBooks(); // তালিকা রিফ্রেশ করা
+                }
+            }
+        }
+
+        // --- Edit Functionality ---
+        if (e.target.classList.contains('edit-btn')) {
+            const bookId = e.target.dataset.id;
+            const bookToEdit = localBooks.find(book => book.id == bookId);
+
+            if (bookToEdit) {
+                // ফর্মের মধ্যে বইয়ের তথ্য দেখানো
+                document.getElementById('book-title').value = bookToEdit.title;
+                document.getElementById('book-author').value = bookToEdit.author;
+                document.getElementById('book-cover-url').value = bookToEdit.cover_image_url || '';
+                document.getElementById('book-page-count').value = bookToEdit.page_count || '';
+                document.getElementById('book-status').value = bookToEdit.status;
+                
+                // হিডেন ইনপুটে বইয়ের আইডি সেট করা
+                let hiddenInput = document.getElementById('edit-book-id');
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.id = 'edit-book-id';
+                    addBookForm.appendChild(hiddenInput);
+                }
+                hiddenInput.value = bookToEdit.id;
+
+                // মডালের টাইটেল পরিবর্তন এবং মডাল দেখানো
+                if(modalTitle) modalTitle.textContent = 'বই সম্পাদনা করুন';
+                showModal();
+            }
+        }
+    });
+
+    // --- Save or Update Data in Supabase ---
     addBookForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) {
@@ -112,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const page_count_val = document.getElementById('book-page-count').value;
         const page_count = page_count_val ? parseInt(page_count_val, 10) : null;
         const status = document.getElementById('book-status').value;
+        const bookIdToEdit = document.getElementById('edit-book-id')?.value;
 
         if (!title || !author) {
             alert('অনুগ্রহ করে বইয়ের নাম এবং লেখকের নাম দিন।');
@@ -125,24 +200,39 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButtonText.classList.add('hidden');
         saveSpinner.classList.remove('hidden');
 
-        const { error } = await _supabase
-            .from('books')
-            .insert([{ 
-                title, 
-                author, 
-                cover_image_url,
-                page_count,
-                status,
-                user_id: currentUser.id 
-            }]);
+        let error;
+
+        const bookData = { 
+            title, 
+            author, 
+            cover_image_url,
+            page_count,
+            status,
+            user_id: currentUser.id 
+        };
+
+        if (bookIdToEdit) {
+            // --- Update Mode ---
+            const { error: updateError } = await _supabase
+                .from('books')
+                .update(bookData)
+                .eq('id', bookIdToEdit);
+            error = updateError;
+        } else {
+            // --- Add Mode ---
+            const { error: insertError } = await _supabase
+                .from('books')
+                .insert([bookData]);
+            error = insertError;
+        }
 
         saveBookBtn.disabled = false;
         saveButtonText.classList.remove('hidden');
         saveSpinner.classList.add('hidden');
 
         if (error) {
-            console.error('বই সেভ করতে সমস্যা হয়েছে:', error);
-            alert('বইটি সেভ করা সম্ভব হয়নি।');
+            console.error('বই সেভ/আপডেট করতে সমস্যা হয়েছে:', error);
+            alert('কার্যক্রমটি সম্পন্ন করা সম্ভব হয়নি।');
         } else {
             hideModal();
             fetchBooks(); // তালিকা রিফ্রেশ করা
