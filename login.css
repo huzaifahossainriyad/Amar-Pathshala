@@ -1,0 +1,103 @@
+:root {
+    --bg-start: #e0eafc;
+    --bg-end: #cfdef3;
+    --text-primary: #2c3e50;
+    --text-secondary: #34495e;
+    --card-bg: rgba(255, 255, 255, 0.6);
+    --card-border: rgba(255, 255, 255, 0.9);
+    --input-bg: rgba(224, 234, 252, 0.5);
+    --input-text: #2c3e50;
+    --input-focus-border: #48c9b0;
+    --accent: #48c9b0;
+    --accent-dark: #41b49d;
+    --error: #e74c3c;
+    --switch-bg: #34495e;
+    --switch-icon: #f1c40f;
+}
+
+html.dark {
+    --bg-start: #2c3e50;
+    --bg-end: #34495e;
+    --text-primary: #ecf0f1;
+    --text-secondary: #bdc3c7;
+    --card-bg: rgba(44, 62, 80, 0.65);
+    --card-border: rgba(52, 73, 94, 0.8);
+    --input-bg: rgba(52, 73, 94, 0.7);
+    --input-text: #ecf0f1;
+    --input-focus-border: #48c9b0;
+    --switch-bg: #ecf0f1;
+    --switch-icon: #48c9b0;
+}
+
+body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background-image: url('https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=1974&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-color: var(--bg-end);
+}
+
+.glass-card {
+    background-color: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.floating-label-group {
+    position: relative;
+}
+
+.floating-label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    transition: all 0.2s ease-out;
+    pointer-events: none;
+    background-color: transparent;
+}
+
+.floating-input:focus + .floating-label,
+.floating-input:not(:placeholder-shown) + .floating-label {
+    top: 0;
+    left: 0.75rem;
+    transform: translateY(-50%) scale(0.8);
+    background-color: var(--card-bg);
+    padding: 0 0.25rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.tab-slider {
+    position: absolute;
+    bottom: -2px;
+    height: 3px;
+    background-color: var(--accent);
+    border-radius: 1.5px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.password-strength-bar {
+    height: 5px;
+    width: 0%;
+    background-color: var(--error);
+    border-radius: 2.5px;
+    transition: all 0.3s ease;
+}
+.password-strength-bar.weak { width: 33%; background-color: #e74c3c; }
+.password-strength-bar.medium { width: 66%; background-color: #f1c40f; }
+.password-strength-bar.strong { width: 100%; background-color: #2ecc71; }
+
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

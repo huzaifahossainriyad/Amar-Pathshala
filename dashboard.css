@@ -1,0 +1,24 @@
+/* --- বেসিক এবং কাস্টম স্টাইল --- */
+body {
+    font-family: 'Tiro Bangla', serif;
+    background-color: #FDF8F0;
+    color: #4A3F35;
+}
+/* লগআউট এবং সেভ বাটনের স্পিনার লোডার এর জন্য */
+.spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+/* মডালের জন্য ট্রানজিশন */
+#add-book-modal {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+#add-book-modal.hidden {
+    opacity: 0;
+    visibility: hidden;
+}

@@ -16,103 +16,8 @@
     <!-- AOS (Animate On Scroll) Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <style>
-        /* --- বেসিক এবং কাস্টম স্টাইল --- */
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Tiro Bangla', serif;
-            background-color: #FDF8F0;
-            color: #4A3F35;
-        }
-        .font-english {
-            font-family: 'Lora', serif;
-        }
-
-        /* --- নতুন, আকর্ষণীয় এবং ছবিসহ লোডার --- */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            display: grid;
-            place-items: center;
-            background-size: cover;
-            background-position: center;
-            /* আপনার দেওয়া লিঙ্ক থেকে লোডারের ব্যাকগ্রাউন্ড ছবি */
-            background-image: url('https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=2070&auto=format&fit=crop');
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-            opacity: 1;
-            visibility: visible;
-        }
-        .preloader-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* ছবির উপর একটি কালো আস্তরণ */
-            backdrop-filter: blur(8px); /* ব্যাকগ্রাউন্ড ব্লার ইফেক্ট */
-        }
-        .loader-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            color: white;
-        }
-        #loader-percentage {
-            font-family: 'Lora', serif;
-            font-size: 4rem; /* শতাংশ লেখার সাইজ বড় করা হয়েছে */
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .progress-bar-container {
-            width: 80%;
-            max-width: 400px;
-            height: 10px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            margin: 20px auto 0;
-            overflow: hidden;
-        }
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background-color: #FDF8F0;
-            border-radius: 5px;
-            transition: width 0.2s linear;
-        }
-        body.loaded #preloader {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        /* --- হিরো সেকশন --- */
-        .hero-bg {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-        
-        /* --- ফিচার কার্ডের হোভার ইফেক্ট --- */
-        .feature-card {
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .feature-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(74, 63, 53, 0.15);
-        }
-        
-        /* --- যোগাযোগ সেকশনের আইকন স্টাইল --- */
-        .contact-icon {
-            width: 1.75rem;
-            height: 1.75rem;
-            stroke-width: 1.5;
-        }
-    </style>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="antialiased">
 
@@ -263,59 +168,8 @@
 
     <!-- AOS (Animate On Scroll) Library Script -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // --- চূড়ান্ত এবং নির্ভরযোগ্য লোডার স্ক্রিপ্ট ---
-        const preloader = document.getElementById('preloader');
-        const loaderPercentage = document.getElementById('loader-percentage');
-        const progressBar = document.getElementById('progress-bar');
-        
-        let progress = 0;
-        // একটি কৃত্রিম লোডিং ইফেক্ট, যা দ্রুত সম্পন্ন হবে
-        const interval = setInterval(() => {
-            progress += Math.random() * 15; // দ্রুত বাড়ানোর জন্য মান পরিবর্তন
-            if (progress > 100) {
-                progress = 100;
-            }
-            loaderPercentage.textContent = `${Math.round(progress)}%`;
-            progressBar.style.width = `${progress}%`;
-
-            if (progress === 100) {
-                clearInterval(interval);
-            }
-        }, 100); // সময় কমানো হয়েছে
-
-        // window.onload নিশ্চিত করে যে ছবিসহ সকল কনটেন্ট লোড হয়েছে
-        window.onload = function() {
-            clearInterval(interval);
-            loaderPercentage.textContent = `100%`;
-            progressBar.style.width = `100%`;
-
-            // অল্প সময় পর লোডারটি fade out হবে
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 500); 
-            
-            AOS.init({
-                duration: 800,
-                once: true,
-                offset: 50,
-            });
-        };
-
-        // --- Mobile menu toggle script ---
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-    </script>
+    
+    <!-- External JS -->
+    <script src="script.js" defer></script>
 </body>
 </html>
