@@ -18,10 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBookForm = document.getElementById('add-book-form');
     const booksContainer = document.getElementById('books-container');
     const saveBookBtn = document.getElementById('save-book-btn');
-    const modalTitle = document.getElementById('modal-title'); // মডালের টাইটেল এলিমেন্ট
+    const modalTitle = document.getElementById('modal-title');
+
+    // Google Books Search Elements
+    const bookSearchInput = document.getElementById('book-search-input');
+    const bookSearchBtn = document.getElementById('book-search-btn');
+    const searchResultsContainer = document.getElementById('search-results');
 
     let currentUser = null;
-    let localBooks = []; // সব বই লোকালভাবে সংরক্ষণের জন্য
+    let localBooks = []; 
 
     const statusMap = {
         'want_to_read': 'পড়তে চাই',
@@ -42,7 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             addBookModal.classList.add('hidden');
             addBookForm.reset();
-            // মডাল লুকানোর সময় ফর্ম রিসেট করা
+            searchResultsContainer.innerHTML = ''; // সার্চ রেজাল্ট পরিষ্কার করা
+            bookSearchInput.value = ''; // সার্চ ইনপুট পরিষ্কার করা
+            
             let hiddenInput = document.getElementById('edit-book-id');
             if (hiddenInput) {
                 hiddenInput.value = '';
@@ -51,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     };
 
-    // নতুন বই যোগ করার জন্য মডাল খোলা
     addBookBtn.addEventListener('click', () => {
         addBookForm.reset();
         let hiddenInput = document.getElementById('edit-book-id');
@@ -59,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
             hiddenInput.value = '';
         }
         if(modalTitle) modalTitle.textContent = 'নতুন বই যোগ করুন';
+        searchResultsContainer.innerHTML = '';
+        bookSearchInput.value = '';
         showModal();
     });
 
@@ -67,6 +75,91 @@ document.addEventListener('DOMContentLoaded', () => {
     addBookModal.addEventListener('click', (e) => {
         if (e.target === addBookModal) {
             hideModal();
+        }
+    });
+
+    // --- Google Books API Search Functionality ---
+    const displaySearchResults = (books) => {
+        searchResultsContainer.innerHTML = '';
+        if (!books || books.length === 0) {
+            searchResultsContainer.innerHTML = `<p class="text-center text-gray-500 p-4">কোনো বই খুঁজে পাওয়া যায়নি।</p>`;
+            return;
+        }
+
+        books.slice(0, 5).forEach(book => { // প্রথম ৫টি ফলাফল দেখানো হচ্ছে
+            const volumeInfo = book.volumeInfo;
+            const title = volumeInfo.title;
+            const authors = volumeInfo.authors ? volumeInfo.authors.join(', ') : 'লেখক অজানা';
+            const cover = volumeInfo.imageLinks?.thumbnail || '';
+            const pages = volumeInfo.pageCount || '';
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            resultItem.innerHTML = `
+                <p class="search-result-title">${title}</p>
+                <p class="search-result-author">${authors}</p>
+            `;
+            
+            // ডেটা অ্যাট্রিবিউট সেট করা
+            resultItem.dataset.title = title;
+            resultItem.dataset.author = authors;
+            resultItem.dataset.cover = cover;
+            resultItem.dataset.pages = pages;
+
+            searchResultsContainer.appendChild(resultItem);
+        });
+    };
+
+    const handleBookSearch = async () => {
+        const query = bookSearchInput.value.trim();
+        if (!query) {
+            alert('অনুসন্ধানের জন্য কিছু লিখুন।');
+            return;
+        }
+
+        const searchButtonText = bookSearchBtn.querySelector('.button-text');
+        const searchSpinner = bookSearchBtn.querySelector('.spinner');
+
+        bookSearchBtn.disabled = true;
+        if(searchButtonText) searchButtonText.classList.add('hidden');
+        if(searchSpinner) searchSpinner.classList.remove('hidden');
+        searchResultsContainer.innerHTML = `<p class="text-center text-gray-500 p-4">অনুসন্ধান চলছে...</p>`;
+
+        try {
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            displaySearchResults(data.items);
+        } catch (error) {
+            console.error('Google Books API থেকে তথ্য আনতে সমস্যা হয়েছে:', error);
+            searchResultsContainer.innerHTML = `<p class="text-center text-red-500 p-4">অনুসন্ধান ব্যর্থ হয়েছে।</p>`;
+        } finally {
+            bookSearchBtn.disabled = false;
+            if(searchButtonText) searchButtonText.classList.remove('hidden');
+            if(searchSpinner) searchSpinner.classList.add('hidden');
+        }
+    };
+
+    bookSearchBtn.addEventListener('click', handleBookSearch);
+    bookSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleBookSearch();
+        }
+    });
+
+    searchResultsContainer.addEventListener('click', (e) => {
+        const item = e.target.closest('.search-result-item');
+        if (item) {
+            document.getElementById('book-title').value = item.dataset.title;
+            document.getElementById('book-author').value = item.dataset.author;
+            document.getElementById('book-cover-url').value = item.dataset.cover;
+            document.getElementById('book-page-count').value = item.dataset.pages;
+            
+            searchResultsContainer.innerHTML = ''; // ফলাফল পরিষ্কার করা
+            bookSearchInput.value = '';
         }
     });
 
@@ -88,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        localBooks = data; // লোকাল অ্যারেতে বইগুলো সেভ করা
+        localBooks = data;
         booksContainer.innerHTML = ''; 
 
         if (localBooks.length === 0) {
@@ -103,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pageCountText = book.page_count ? `${book.page_count} পৃষ্ঠা` : '';
 
                 bookCard.innerHTML = `
-                    <img src="${coverImageUrl}" alt="${book.title} এর কভার" class="w-full h-64 object-cover">
+                    <img src="${coverImageUrl}" alt="${book.title} এর কভার" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x600/EAE0D5/4A3F35?text=No+Cover';">
                     <div class="p-5 flex flex-col flex-grow">
                         <h3 class="text-xl font-bold text-[#4A3F35] flex-grow">${book.title}</h3>
                         <p class="text-md text-gray-600 mt-1 mb-3"> - ${book.author}</p>
@@ -124,48 +217,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Delegation for Edit and Delete ---
     booksContainer.addEventListener('click', async (e) => {
-        // --- Delete Functionality ---
         if (e.target.classList.contains('delete-btn')) {
             const bookId = e.target.dataset.id;
             if (confirm('আপনি কি সত্যিই এই বইটি মুছে ফেলতে চান?')) {
-                const { error } = await _supabase
-                    .from('books')
-                    .delete()
-                    .eq('id', bookId);
-
+                const { error } = await _supabase.from('books').delete().eq('id', bookId);
                 if (error) {
                     console.error('বই মুছতে সমস্যা হয়েছে:', error);
                     alert('বইটি মোছা সম্ভব হয়নি।');
                 } else {
-                    fetchBooks(); // তালিকা রিফ্রেশ করা
+                    fetchBooks();
                 }
             }
         }
 
-        // --- Edit Functionality ---
         if (e.target.classList.contains('edit-btn')) {
             const bookId = e.target.dataset.id;
             const bookToEdit = localBooks.find(book => book.id == bookId);
 
             if (bookToEdit) {
-                // ফর্মের মধ্যে বইয়ের তথ্য দেখানো
                 document.getElementById('book-title').value = bookToEdit.title;
                 document.getElementById('book-author').value = bookToEdit.author;
                 document.getElementById('book-cover-url').value = bookToEdit.cover_image_url || '';
                 document.getElementById('book-page-count').value = bookToEdit.page_count || '';
                 document.getElementById('book-status').value = bookToEdit.status;
                 
-                // হিডেন ইনপুটে বইয়ের আইডি সেট করা
-                let hiddenInput = document.getElementById('edit-book-id');
-                if (!hiddenInput) {
-                    hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.id = 'edit-book-id';
-                    addBookForm.appendChild(hiddenInput);
-                }
-                hiddenInput.value = bookToEdit.id;
+                document.getElementById('edit-book-id').value = bookToEdit.id;
 
-                // মডালের টাইটেল পরিবর্তন এবং মডাল দেখানো
                 if(modalTitle) modalTitle.textContent = 'বই সম্পাদনা করুন';
                 showModal();
             }
@@ -180,49 +257,33 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const title = document.getElementById('book-title').value.trim();
-        const author = document.getElementById('book-author').value.trim();
-        const cover_image_url = document.getElementById('book-cover-url').value.trim() || null;
-        const page_count_val = document.getElementById('book-page-count').value;
-        const page_count = page_count_val ? parseInt(page_count_val, 10) : null;
-        const status = document.getElementById('book-status').value;
-        const bookIdToEdit = document.getElementById('edit-book-id')?.value;
+        const bookData = {
+            title: document.getElementById('book-title').value.trim(),
+            author: document.getElementById('book-author').value.trim(),
+            cover_image_url: document.getElementById('book-cover-url').value.trim() || null,
+            page_count: parseInt(document.getElementById('book-page-count').value, 10) || null,
+            status: document.getElementById('book-status').value,
+            user_id: currentUser.id
+        };
+        const bookIdToEdit = document.getElementById('edit-book-id').value;
 
-        if (!title || !author) {
+        if (!bookData.title || !bookData.author) {
             alert('অনুগ্রহ করে বইয়ের নাম এবং লেখকের নাম দিন।');
             return;
         }
 
         const saveButtonText = saveBookBtn.querySelector('.button-text');
         const saveSpinner = saveBookBtn.querySelector('.spinner');
-
         saveBookBtn.disabled = true;
         saveButtonText.classList.add('hidden');
         saveSpinner.classList.remove('hidden');
 
         let error;
-
-        const bookData = { 
-            title, 
-            author, 
-            cover_image_url,
-            page_count,
-            status,
-            user_id: currentUser.id 
-        };
-
         if (bookIdToEdit) {
-            // --- Update Mode ---
-            const { error: updateError } = await _supabase
-                .from('books')
-                .update(bookData)
-                .eq('id', bookIdToEdit);
+            const { error: updateError } = await _supabase.from('books').update(bookData).eq('id', bookIdToEdit);
             error = updateError;
         } else {
-            // --- Add Mode ---
-            const { error: insertError } = await _supabase
-                .from('books')
-                .insert([bookData]);
+            const { error: insertError } = await _supabase.from('books').insert([bookData]);
             error = insertError;
         }
 
@@ -235,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('কার্যক্রমটি সম্পন্ন করা সম্ভব হয়নি।');
         } else {
             hideModal();
-            fetchBooks(); // তালিকা রিফ্রেশ করা
+            fetchBooks();
         }
     });
 
@@ -253,8 +314,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     _supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN') {
-            currentUser = session.user;
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            currentUser = session?.user;
             checkUser();
         } else if (event === 'SIGNED_OUT') {
             currentUser = null;
@@ -262,8 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    checkUser(); 
-
     // --- Logout Functionality ---
     logoutButton.addEventListener('click', async () => {
         logoutButton.disabled = true;

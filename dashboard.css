@@ -1,27 +1,29 @@
-/* --- সম্পাদনা এবং মুছে ফেলার বাটনের স্টাইল --- */
-.edit-btn, .delete-btn {
-    padding: 6px 12px;
-    border: none;
+/* --- Google Books সার্চ রেজাল্টের জন্য স্টাইল --- */
+#search-results {
     border-radius: 6px;
-    color: white;
-    font-size: 14px;
+}
+
+.search-result-item {
+    padding: 12px;
+    border-bottom: 1px solid #EAE0D5;
     cursor: pointer;
-    transition: opacity 0.3s ease;
-    font-family: 'Tiro Bangla', serif; /* ফন্ট যোগ করা হলো */
+    transition: background-color 0.2s ease-in-out;
 }
 
-.edit-btn {
-    background-color: #3b82f6; /* নীল রঙ */
+.search-result-item:last-child {
+    border-bottom: none;
 }
 
-.edit-btn:hover {
-    opacity: 0.8;
+.search-result-item:hover {
+    background-color: #e7d8c4;
 }
 
-.delete-btn {
-    background-color: #ef4444; /* লাল রঙ */
+.search-result-title {
+    font-weight: bold;
+    color: #4A3F35;
 }
 
-.delete-btn:hover {
-    opacity: 0.8;
+.search-result-author {
+    font-size: 0.9rem;
+    color: #785A3E;
 }
