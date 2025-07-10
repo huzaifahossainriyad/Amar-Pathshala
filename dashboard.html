@@ -23,7 +23,11 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">আমার পাঠশালা</a>
             <div class="flex items-center space-x-4 md:space-x-6">
-                <p id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] font-medium"></p>
+                <!-- পরিবর্তিত অংশ শুরু -->
+                <a href="./profile.html" id="user-welcome-link" class="text-sm md:text-base text-right text-[#4A3F35] font-medium hover:text-[#785A3E] transition-colors">
+                    <span id="user-welcome-message">স্বাগতম, ...</span>
+                </a>
+                <!-- পরিবর্তিত অংশ শেষ -->
                 <button id="logout-button" class="bg-[#785A3E] hover:bg-[#664c32] text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center text-sm md:text-base">
                     <span class="button-text">লগআউট</span>
                     <div class="spinner hidden ml-2"></div>

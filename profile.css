@@ -1,0 +1,32 @@
+/* --- বেসিক এবং কাস্টম স্টাইল --- */
+body {
+    font-family: 'Tiro Bangla', serif;
+    color: #4A3F35;
+}
+
+/* --- পরিসংখ্যান কার্ডের জন্য স্টাইল --- */
+.stat-card {
+    border-top: 4px solid #785A3E;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(74, 63, 53, 0.1);
+}
+
+/* --- লোডিং স্পিনার --- */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

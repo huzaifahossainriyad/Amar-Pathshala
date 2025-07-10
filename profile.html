@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রোফাইল ও সেটিংস - আমার পাঠশালা</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts (Tiro Bangla) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body class="antialiased bg-[#FDF8F0]">
+
+    <!-- Header Section -->
+    <header class="bg-[#FDF8F0]/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="./dashboard.html" class="text-2xl md:text-3xl font-bold text-[#4A3F35] hover:text-[#785A3E] transition-colors">
+                &larr; ড্যাশবোর্ডে ফিরে যান
+            </a>
+            <p id="user-name" class="text-sm md:text-base text-right text-[#4A3F35] font-medium"></p>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Reading Statistics Section -->
+        <section id="reading-stats" class="mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-[#4A3F35]">আপনার পড়ার পরিসংখ্যান</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Total Books Read Card -->
+                <div class="stat-card bg-white/70 p-8 rounded-xl shadow-lg text-center">
+                    <h2 class="text-xl font-semibold text-gray-600 mb-2">পড়া শেষ করেছেন</h2>
+                    <div id="total-books-read" class="text-5xl font-bold text-[#785A3E]">...</div>
+                    <p class="text-gray-500 mt-1">টি বই</p>
+                </div>
+                <!-- Total Pages Read Card -->
+                <div class="stat-card bg-white/70 p-8 rounded-xl shadow-lg text-center">
+                    <h2 class="text-xl font-semibold text-gray-600 mb-2">মোট পৃষ্ঠা পড়েছেন</h2>
+                    <div id="total-pages-read" class="text-5xl font-bold text-[#785A3E]">...</div>
+                    <p class="text-gray-500 mt-1">টি পৃষ্ঠা</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Account Settings Section -->
+        <section id="account-settings">
+            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-[#4A3F35]">অ্যাকাউন্ট সেটিংস</h1>
+            <div class="max-w-lg mx-auto bg-white/70 p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold text-[#4A3F35] mb-6">পাসওয়ার্ড পরিবর্তন করুন</h2>
+                <form id="password-update-form" class="space-y-6">
+                    <div>
+                        <label for="new-password" class="block text-sm font-medium text-[#4A3F35] mb-1">নতুন পাসওয়ার্ড</label>
+                        <input type="password" id="new-password" name="new-password" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required minlength="6">
+                        <p class="text-xs text-gray-500 mt-1">কমপক্ষে ৬ অক্ষরের হতে হবে।</p>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" id="update-password-btn" class="py-2 px-6 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center min-w-[120px] shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <span class="button-text">আপডেট করুন</span>
+                            <div class="spinner hidden"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="text-white py-8 mt-12" style="background-color: #4A3F35;">
+        <div class="container mx-auto px-6 text-center text-gray-300">
+            <p>&copy; ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- External JS -->
+    <script src="profile.js" defer></script>
+</body>
+</html>
