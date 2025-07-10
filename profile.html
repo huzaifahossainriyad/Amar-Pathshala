@@ -16,6 +16,9 @@
     <!-- Toastify JS Library -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- External CSS -->
     <link rel="stylesheet" href="profile.css">
@@ -28,50 +31,118 @@
             <a href="./dashboard.html" class="text-2xl md:text-3xl font-bold text-[#4A3F35] hover:text-[#785A3E] transition-colors">
                 &larr; ড্যাশবোর্ডে ফিরে যান
             </a>
-            <p id="user-name" class="text-sm md:text-base text-right text-[#4A3F35] font-medium"></p>
+            <!-- *** সংশোধিত: ব্যবহারকারীর নাম ও প্রোফাইল ছবি একসাথে দেখানো হয়েছে *** -->
+            <div class="flex items-center space-x-4">
+                <p id="user-name-header" class="text-sm md:text-base text-right text-[#4A3F35] font-medium"></p>
+                <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300">
+            </div>
         </nav>
     </header>
 
     <main class="container mx-auto px-6 py-12">
-        <!-- Reading Statistics Section -->
-        <section id="reading-stats" class="mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-[#4A3F35]">আপনার পড়ার পরিসংখ্যান</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Total Books Read Card -->
-                <div class="stat-card bg-white/70 p-8 rounded-xl shadow-lg text-center">
-                    <h2 class="text-xl font-semibold text-gray-600 mb-2">পড়া শেষ করেছেন</h2>
-                    <div id="total-books-read" class="text-5xl font-bold text-[#785A3E]">...</div>
-                    <p class="text-gray-500 mt-1">টি বই</p>
-                </div>
-                <!-- Total Pages Read Card -->
-                <div class="stat-card bg-white/70 p-8 rounded-xl shadow-lg text-center">
-                    <h2 class="text-xl font-semibold text-gray-600 mb-2">মোট পৃষ্ঠা পড়েছেন</h2>
-                    <div id="total-pages-read" class="text-5xl font-bold text-[#785A3E]">...</div>
-                    <p class="text-gray-500 mt-1">টি পৃষ্ঠা</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Account Settings Section -->
-        <section id="account-settings">
-            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-[#4A3F35]">অ্যাকাউন্ট সেটিংস</h1>
-            <div class="max-w-lg mx-auto bg-white/70 p-8 rounded-xl shadow-lg">
-                <h2 class="text-2xl font-bold text-[#4A3F35] mb-6">পাসওয়ার্ড পরিবর্তন করুন</h2>
-                <form id="password-update-form" class="space-y-6">
-                    <div>
-                        <label for="new-password" class="block text-sm font-medium text-[#4A3F35] mb-1">নতুন পাসওয়ার্ড</label>
-                        <input type="password" id="new-password" name="new-password" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required minlength="6">
-                        <p class="text-xs text-gray-500 mt-1">কমপক্ষে ৬ অক্ষরের হতে হবে।</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- Left Column: Profile Info & Picture -->
+            <div class="lg:col-span-1 space-y-8">
+                <!-- Profile Information Section -->
+                <section id="profile-info-section" class="profile-section">
+                    <h2 class="section-title">প্রোফাইল তথ্য</h2>
+                    <div class="text-center mb-6">
+                        <!-- *** সংশোধিত: প্রোফাইল ছবির ক্লাস আপডেট করা হয়েছে *** -->
+                        <img id="profile-avatar" src="https://placehold.co/128x128/EAE0D5/4A3F35?text=?" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                     </div>
-                    <div class="flex justify-end">
-                        <button type="submit" id="update-password-btn" class="py-2 px-6 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center min-w-[120px] shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                            <span class="button-text">আপডেট করুন</span>
+                    <form id="name-update-form" class="space-y-4">
+                        <div>
+                            <label for="full-name" class="block text-sm font-medium text-[#4A3F35] mb-1">পুরো নাম</label>
+                            <input type="text" id="full-name" name="full-name" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white">
+                        </div>
+                        <button type="submit" id="update-name-btn" class="w-full py-2 px-6 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center shadow-md">
+                            <span class="button-text">নাম আপডেট করুন</span>
                             <div class="spinner hidden"></div>
                         </button>
-                    </div>
-                </form>
+                    </form>
+                    <hr class="my-6 border-gray-300">
+                    <!-- Avatar Upload Section -->
+                    <form id="avatar-upload-form" class="space-y-4">
+                         <div>
+                            <label for="avatar-upload" class="block text-sm font-medium text-[#4A3F35] mb-2">প্রোফাইল ছবি পরিবর্তন করুন</label>
+                            <input type="file" id="avatar-upload" name="avatar-upload" accept="image/png, image/jpeg" class="file-input">
+                            <label for="avatar-upload" class="file-input-label">
+                                ফাইল বাছাই করুন
+                            </label>
+                         </div>
+                        <button type="submit" id="upload-avatar-btn" class="w-full py-2 px-6 bg-[#A07C5B] text-white rounded-lg hover:bg-[#8a6a4d] transition flex items-center justify-center shadow-md" disabled>
+                            <span class="button-text">ছবি আপলোড করুন</span>
+                            <div class="spinner hidden"></div>
+                        </button>
+                    </form>
+                </section>
             </div>
-        </section>
+
+            <!-- Right Column: Stats, Settings, etc. -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Reading Statistics Section -->
+                <section id="reading-stats" class="profile-section">
+                    <h2 class="section-title">আপনার পড়ার পরিসংখ্যান</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="stat-card">
+                            <h3 class="text-lg font-semibold text-gray-600 mb-1">পড়া শেষ করেছেন</h3>
+                            <div id="total-books-read" class="text-4xl font-bold text-[#785A3E]">...</div>
+                            <p class="text-gray-500 mt-1">টি বই</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-lg font-semibold text-gray-600 mb-1">মোট পৃষ্ঠা পড়েছেন</h3>
+                            <div id="total-pages-read" class="text-4xl font-bold text-[#785A3E]">...</div>
+                            <p class="text-gray-500 mt-1">টি পৃষ্ঠা</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reading Visualization Section -->
+                <section id="reading-visualization" class="profile-section">
+                    <h2 class="section-title">আপনার পড়ার অভ্যাস</h2>
+                    <div class="bg-white/80 p-4 rounded-lg shadow-inner">
+                        <canvas id="reading-chart" height="200"></canvas>
+                    </div>
+                </section>
+
+                <!-- Account Settings Section -->
+                <section id="account-settings" class="profile-section">
+                    <h2 class="section-title">অ্যাকাউন্ট সেটিংস</h2>
+                    <form id="password-update-form" class="space-y-4">
+                        <div>
+                            <label for="new-password" class="block text-sm font-medium text-[#4A3F35] mb-1">নতুন পাসওয়ার্ড</label>
+                            <input type="password" id="new-password" name="new-password" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required minlength="6">
+                            <p class="text-xs text-gray-500 mt-1">কমপক্ষে ৬ অক্ষরের হতে হবে।</p>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" id="update-password-btn" class="py-2 px-6 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center min-w-[120px] shadow-md">
+                                <span class="button-text">আপডেট করুন</span>
+                                <div class="spinner hidden"></div>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Data Management Section -->
+                <section id="data-management" class="profile-section">
+                    <h2 class="section-title">ডেটা ম্যানেজমেন্ট</h2>
+                    <button id="download-data-btn" class="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        আমার সব ডেটা ডাউনলোড করুন (CSV)
+                    </button>
+                </section>
+
+                <!-- Danger Zone Section -->
+                <section id="danger-zone" class="danger-zone">
+                    <h2 class="text-2xl font-bold text-red-700 mb-4">বিপজ্জনক এলাকা</h2>
+                    <p class="text-red-600 mb-4">নিচের কাজটি необратиযোগ্য। অনুগ্রহ করে সতর্ক থাকুন।</p>
+                    <button id="delete-account-btn" class="w-full py-3 px-6 bg-red-600 text-white rounded-lg hover:bg-red-800 transition flex items-center justify-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
+                        আমার অ্যাকাউন্ট মুছে ফেলুন
+                    </button>
+                </section>
+            </div>
+        </div>
     </main>
 
     <!-- Footer Section -->
@@ -84,6 +155,9 @@
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- Shared Configuration for Supabase -->
+    <script src="config.js"></script>
+    
     <!-- External JS -->
     <script src="profile.js" defer></script>
 </body>

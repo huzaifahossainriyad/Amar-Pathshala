@@ -8,25 +8,82 @@ body {
     background-attachment: fixed;
 }
 
-/* --- Containers for main content to ensure readability --- */
-#reading-stats,
-#account-settings {
+/* --- সাধারণ সেকশন স্টাইল --- */
+.profile-section {
     background-color: rgba(253, 248, 240, 0.92); /* #FDF8F0 with 92% opacity */
     padding: 2rem;
     border-radius: 0.75rem; /* 12px */
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
+.section-title {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    color: #4A3F35;
+    margin-bottom: 1.5rem; /* 24px */
+    padding-bottom: 0.5rem; /* 8px */
+    border-bottom: 2px solid #EAE0D5;
+}
+
 /* --- পরিসংখ্যান কার্ডের জন্য স্টাইল --- */
 .stat-card {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
     border-top: 4px solid #785A3E;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* The background is now set via Tailwind in the HTML (bg-white/70) */
 }
 
 .stat-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(74, 63, 53, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(74, 63, 53, 0.1);
+}
+
+/* --- ফাইল ইনপুট স্টাইল --- */
+.file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.file-input-label {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    background-color: #fff;
+    color: #4A3F35;
+    border: 1px solid #EAE0D5;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    font-weight: 500;
+}
+
+.file-input:focus + .file-input-label,
+.file-input-label:hover {
+    background-color: #f8f5f0;
+    border-color: #785A3E;
+}
+
+/* --- ডেঞ্জার জোন স্টাইল --- */
+.danger-zone {
+    background-color: rgba(255, 235, 238, 0.9); /* হালকা লাল ব্যাকগ্রাউন্ড */
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 2px solid #ef4444; /* লাল বর্ডার */
+}
+
+.danger-zone h2 {
+    color: #b91c1c; /* গাঢ় লাল টেক্সট */
+}
+
+.danger-zone p {
+    color: #dc2626; /* মাঝারি লাল টেক্সট */
 }
 
 /* --- লোডিং স্পিনার --- */
@@ -42,5 +99,60 @@ body {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* --- মোবাইল ডিভাইসের জন্য রেসপন্সিভ স্টাইল --- */
+
+/* ট্যাবলেট এবং ছোট ডেস্কটপ (768px পর্যন্ত) */
+@media (max-width: 768px) {
+    .profile-section {
+        padding: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem; /* 20px */
+    }
+
+    /* গ্রিড কলাম একটিতে পরিবর্তন করা */
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* মোবাইল ডিভাইস (480px পর্যন্ত) */
+@media (max-width: 480px) {
+    body {
+        background-image: none; /* ছোট স্ক্রিনে ব্যাকগ্রাউন্ড ইমেজ বাদ দেওয়া */
+        background-color: #FDF8F0;
+    }
+
+    .profile-section {
+        padding: 1rem;
+        box-shadow: none; /* ছোট স্ক্রিনে শ্যাডো বাদ দেওয়া */
+        border-radius: 0;
+    }
+
+    .section-title {
+        font-size: 1.125rem; /* 18px */
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    h3.text-4xl {
+        font-size: 2.25rem; /* 36px থেকে কমানো */
+    }
+
+    p.text-lg {
+        font-size: 1rem; /* 18px থেকে কমানো */
+    }
+
+    /* বাটনগুলোর প্যাডিং কমানো */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem; /* 14px */
     }
 }

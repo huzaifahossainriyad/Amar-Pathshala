@@ -4,18 +4,48 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    font-family: 'Tiro Bangla', serif; /* Moved from original body rule */
-    color: #4A3F35; /* Moved from original body rule */
+    font-family: 'Tiro Bangla', serif;
+    color: #4A3F35;
 }
 
 /* --- Container for main content to ensure readability --- */
 #bookshelf {
     background-color: rgba(253, 248, 240, 0.92); /* #FDF8F0 with 92% opacity */
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 0.75rem; /* 12px */
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     position: relative; /* Added for loader positioning */
     min-height: 50vh; /* Ensure it has some height for the loader to appear in */
+}
+
+@media (min-width: 768px) {
+    #bookshelf {
+        padding: 2rem;
+    }
+}
+
+/* --- *** নতুন সংযোজন: বইয়ের কার্ডকে ক্লিকেবল করার জন্য স্টাইল *** --- */
+.book-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+.book-card {
+    background-color: white;
+    border-radius: 0.5rem; /* 8px */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 /* --- Google Books সার্চ রেজাল্টের জন্য স্টাইল --- */
@@ -48,7 +78,7 @@ body {
     color: #785A3E;
 }
 
-/* Spinner for loading states, copied from profile.css for consistency */
+/* Spinner for loading states */
 .spinner {
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top-color: #ffffff;
@@ -66,7 +96,7 @@ body {
 
 /* --- Reading Goal Progress Bar --- */
 #goal-progress-bar-container {
-    background-color: #EAE0D5; /* A light brown from the palette */
+    background-color: #EAE0D5;
     border-radius: 9999px;
     height: 1rem; /* 16px */
     width: 100%;
@@ -83,4 +113,7 @@ body {
     color: white;
     font-size: 0.75rem;
     line-height: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

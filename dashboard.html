@@ -27,9 +27,11 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">আমার পাঠশালা</a>
             <div class="flex items-center space-x-4 md:space-x-6">
-                <span id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] font-medium">স্বাগতম, ...</span>
-                <a href="./profile.html" class="text-[#4A3F35]">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hover:text-gray-700 transition-colors">
+                <span id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] font-medium hidden sm:block">স্বাগতম...</span>
+                <!-- *** সংশোধিত: ব্যবহারকারীর প্রোফাইল ছবি দৃশ্যমান করা হয়েছে *** -->
+                <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300">
+                <a href="./profile.html" class="text-[#4A3F35] hover:text-[#785A3E] transition-colors" aria-label="প্রোফাইল ও সেটিংস">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.242 1.417l-1.07 1.071c-.13.13-.242.289-.32.455a3.75 3.75 0 0 1 0 1.51c.078.166.19.326.32.456l1.07 1.071a1.125 1.125 0 0 1 .242 1.417l-1.296 2.247a1.125 1.125 0 0 1-1.37.49l-1.217-.456a3.75 3.75 0 0 1-1.075.124c-.073.044-.146.087-.22.127a3.75 3.75 0 0 1-.645.87l-.213 1.281c-.09.542-.56.94-1.11-.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281a3.75 3.75 0 0 1-.645-.87c-.074-.04-.147-.083-.22-.127a3.75 3.75 0 0 1-1.075-.124l-1.217.456a1.125 1.125 0 0 1-1.37-.49l-1.296-2.247a1.125 1.125 0 0 1 .242-1.417l1.07-1.071c.13-.13.242.289-.32-.455a3.75 3.75 0 0 1 0-1.51c-.078-.166-.19-.326-.32-.456l-1.07-1.071a1.125 1.125 0 0 1-.242-1.417l1.296-2.247a1.125 1.125 0 0 1 1.37-.49l1.217.456c.355.133.75.072 1.075-.124.073-.044.146-.087-.22-.127.332-.183.582-.496.645-.87l.213-1.281Z" />
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
@@ -59,10 +61,8 @@
 
             <!-- Reading Goal Section -->
             <div id="reading-goal-section" class="mb-8 p-6 bg-white/60 rounded-lg shadow-md text-center">
-                <h2 id="goal-title" class="text-2xl font-bold text-[#4A3F35] mb-2"></h2>
-                <div id="goal-progress-bar-container" class="w-full bg-gray-200 rounded-full h-4 my-3 overflow-hidden">
-                    <!-- Progress bar will be inserted by JS -->
-                </div>
+                <h2 id="goal-title" class="text-2xl font-bold text-[#4A3F35] mb-2">পড়ার লক্ষ্য লোড হচ্ছে...</h2>
+                <div id="goal-progress-bar-container" class="w-full bg-gray-200 rounded-full h-4 my-3 overflow-hidden"></div>
                 <p id="goal-progress-text" class="text-md text-gray-700 mb-4"></p>
                 <button id="set-goal-btn" class="bg-[#A07C5B] hover:bg-[#8a6a4d] text-white font-semibold py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                     লক্ষ্য ঠিক করুন
@@ -70,7 +70,7 @@
             </div>
 
             <!-- Library Search and Filter Section -->
-            <div id="library-controls" class="mb-8 p-4 bg-white/50 rounded-lg shadow-md">
+            <div id="library-controls" class="hidden mb-8 p-4 bg-white/50 rounded-lg shadow-md">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="md:col-span-2">
                         <label for="library-search-input" class="sr-only">বই খুঁজুন</label>
@@ -111,7 +111,7 @@
     </footer>
 
     <!-- Add/Edit Book Modal -->
-    <div id="add-book-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div id="add-book-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-[#FDF8F0] rounded-lg shadow-xl p-6 md:p-8 w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="modal-title" class="text-2xl font-bold text-[#4A3F35]">নতুন বই যোগ করুন</h2>
@@ -126,7 +126,7 @@
                         <div class="spinner hidden"></div>
                     </button>
                 </div>
-                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto"></div>
+                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto bg-white rounded-md border border-gray-200"></div>
             </div>
             <form id="add-book-form" class="space-y-4">
                 <input type="hidden" id="edit-book-id">
@@ -139,11 +139,11 @@
                     <input type="text" id="book-author" name="book-author" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required>
                 </div>
                 <div>
-                    <label for="book-cover-url" class="block text-sm font-medium text-[#4A3F35] mb-1">কভার ইমেজ লিঙ্ক</label>
+                    <label for="book-cover-url" class="block text-sm font-medium text-[#4A3F35] mb-1">কভার ইমেজ লিঙ্ক (ঐচ্ছিক)</label>
                     <input type="url" id="book-cover-url" name="book-cover-url" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white">
                 </div>
                 <div>
-                    <label for="book-page-count" class="block text-sm font-medium text-[#4A3F35] mb-1">পৃষ্ঠা সংখ্যা</label>
+                    <label for="book-page-count" class="block text-sm font-medium text-[#4A3F35] mb-1">পৃষ্ঠা সংখ্যা (ঐচ্ছিক)</label>
                     <input type="number" id="book-page-count" name="book-page-count" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" min="0">
                 </div>
                 <div>
@@ -166,7 +166,7 @@
     </div>
 
     <!-- Set Goal Modal -->
-    <div id="goal-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div id="goal-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-[#FDF8F0] rounded-lg shadow-xl p-8 w-full max-w-sm transform transition-all duration-300">
             <h2 class="text-2xl font-bold text-[#4A3F35] mb-6 text-center">আপনার পড়ার লক্ষ্য ঠিক করুন</h2>
             <form id="goal-form">
@@ -184,6 +184,9 @@
 
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Shared Configuration for Supabase -->
+    <script src="config.js"></script>
 
     <!-- External JS -->
     <script src="dashboard.js" defer></script>
