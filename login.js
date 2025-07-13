@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Supabase Client Initialization ---
-    // This block was added to fix the "_supabase is not defined" error.
+    // This needs to be configured with your project's URL and anon key
     const SUPABASE_URL = 'https://mfdjzklkwndjifsomxtm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZGp6a2xrd25kamlmc29teHRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3OTMwMTMsImV4cCI6MjA2NzM2OTAxM30.qF407SzDMtbJHFt7GAOxNVeObhAmt0t_nGH3CtVGtPs';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -20,17 +20,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const strengthText = document.getElementById('password-strength-text');
     const confirmPasswordInput = document.getElementById('confirm-password');
     const allForms = document.querySelectorAll('form');
+    const quoteContainer = document.getElementById('quote-container');
+    const quoteTextElem = document.getElementById('quote-text');
+    const quoteAuthorElem = document.getElementById('quote-author');
+    const newQuoteBtn = document.getElementById('new-quote-btn');
+
+    // --- Quotes Feature ---
+    const quotes = [
+        { quote: "আপনার জ্ঞানের ডিজিটাল সংগ্রহশালা। প্রতিটি বই হোক এক একটি নতুন পৃথিবী।", author: "আমার পাঠশালা" },
+        { quote: "বই কিনে কেউ দেউলিয়া হয় না।", author: "সৈয়দ মুজতবা আলী" },
+        { quote: "একটি ভালো বই একশ জন বন্ধুর সমান, কিন্তু একজন ভালো বন্ধু একটি লাইব্রেরির সমান।", author: "এপিজে আবদুল কালাম" },
+        { quote: "বই পড়া মানে নিজের আত্মার সাথে কথা বলা।", author: "ভলতেয়ার" },
+        { quote: "এমনভাবে পড়ো যেন তুমি চিরকাল বাঁচবে। এমনভাবে বাঁচো যেন তুমি আগামীকাল মারা যাবে।", author: "মহাত্মা গান্ধী" },
+        { quote: "জ্ঞান হলো ডানা যা দিয়ে আমরা স্বর্গে উড়তে পারি।", author: "উইলিয়াম শেক্সপিয়ার" }
+    ];
+
+    let currentQuoteIndex = -1; // Start at -1 to show the first quote initially
+
+    const showNewQuote = () => {
+        if (!quoteContainer) return; // Don't run if the element doesn't exist
+        
+        quoteContainer.classList.add('fade-out');
+        
+        setTimeout(() => {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            const { quote, author } = quotes[currentQuoteIndex];
+            quoteTextElem.textContent = `"${quote}"`;
+            quoteAuthorElem.textContent = `- ${author}`;
+            quoteContainer.classList.remove('fade-out');
+        }, 500); // Match CSS transition time
+    };
+    
+    // Initial and periodic quote change
+    showNewQuote(); 
+    setInterval(showNewQuote, 10000); // Change quote every 10 seconds
+    if(newQuoteBtn) {
+        newQuoteBtn.addEventListener('click', showNewQuote);
+    }
+
 
     // --- Theme Toggle Logic ---
     const applyTheme = (theme) => {
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
-            sunIcon.classList.add('hidden');
-            moonIcon.classList.remove('hidden');
+            if(sunIcon) sunIcon.classList.add('hidden');
+            if(moonIcon) moonIcon.classList.remove('hidden');
         } else {
             document.documentElement.classList.remove('dark');
-            sunIcon.classList.remove('hidden');
-            moonIcon.classList.add('hidden');
+            if(sunIcon) sunIcon.classList.remove('hidden');
+            if(moonIcon) moonIcon.classList.add('hidden');
         }
     };
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -43,20 +81,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Tab Switching Logic ---
     const updateSlider = (tab) => {
+        if (!tabSlider || !tab) return;
         tabSlider.style.width = `${tab.offsetWidth}px`;
         tabSlider.style.left = `${tab.offsetLeft}px`;
     };
     const setActiveTab = (tab) => {
+        if (!loginTab || !signupTab || !loginForm || !signupForm) return;
         const isLoginTab = tab === loginTab;
         loginTab.classList.toggle('text-[var(--text-secondary)]', !isLoginTab);
+        loginTab.classList.toggle('text-[var(--text-primary)]', isLoginTab);
         signupTab.classList.toggle('text-[var(--text-secondary)]', isLoginTab);
+        signupTab.classList.toggle('text-[var(--text-primary)]', !isLoginTab);
         loginForm.classList.toggle('hidden', !isLoginTab);
         signupForm.classList.toggle('hidden', isLoginTab);
         updateSlider(tab);
     };
-    loginTab.addEventListener('click', () => setActiveTab(loginTab));
-    signupTab.addEventListener('click', () => setActiveTab(signupTab));
-    setTimeout(() => updateSlider(loginTab), 50);
+    if (loginTab) loginTab.addEventListener('click', () => setActiveTab(loginTab));
+    if (signupTab) signupTab.addEventListener('click', () => setActiveTab(signupTab));
+    setTimeout(() => {
+        if(loginTab) updateSlider(loginTab)
+    }, 100);
 
     // --- Password Visibility Toggle ---
     passwordToggles.forEach(toggle => {
@@ -86,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const checkPasswordStrength = (password) => {
+        if (!strengthBar || !strengthText) return;
         let score = 0;
         if (password.length >= 8) score++;
         if (/[A-Z]/.test(password)) score++;
@@ -93,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/[0-9]/.test(password)) score++;
         if (/[^A-Za-z0-9]/.test(password)) score++;
 
-        strengthBar.className = 'password-strength-bar'; // Reset classes
+        strengthBar.className = 'password-strength-bar';
         if (score <= 2) {
             strengthBar.classList.add('weak');
             strengthText.textContent = 'দুর্বল';
@@ -107,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const validateField = (input) => {
+        if (!input) return;
         const validator = validators[input.name];
         if (!validator) return;
         const errorMessage = validator(input.value);
@@ -115,12 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (input.name === 'signup-password') {
             checkPasswordStrength(input.value);
-            validateField(confirmPasswordInput);
+            if (confirmPasswordInput) validateField(confirmPasswordInput);
         }
-        checkFormValidity(input.form);
+        if (input.form) checkFormValidity(input.form);
     };
 
     const checkFormValidity = (form) => {
+        if (!form) return;
         const inputs = form.querySelectorAll('input[required]');
         const submitButton = form.querySelector('button[type="submit"]');
         let isFormValid = true;
@@ -163,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 alert('সাইন-আপ সফল! আপনার ইমেইল চেক করে একাউন্ট ভেরিফাই করুন। এরপর লগইন করুন।');
                 form.reset();
-                setActiveTab(loginTab); // সাইন-আপের পর লগইন ট্যাবে পাঠানো হলো
+                if (loginTab) setActiveTab(loginTab);
 
             } else if (form.id === 'login-form') {
                 const email = form.querySelector('#login-email').value;
@@ -172,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { error } = await _supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 
-                window.location.href = 'dashboard.html';
+                window.location.href = 'dashboard.html'; // Redirect on successful login
             }
         } catch (error) {
             console.error('Authentication Error:', error);

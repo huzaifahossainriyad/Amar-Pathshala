@@ -1,51 +1,51 @@
+/* Root variables for light and dark themes */
 :root {
-    --bg-start: #e0eafc;
-    --bg-end: #cfdef3;
-    --text-primary: #2c3e50;
-    --text-secondary: #34495e;
-    --card-bg: rgba(255, 255, 255, 0.6);
-    --card-border: rgba(255, 255, 255, 0.9);
-    --input-bg: rgba(224, 234, 252, 0.5);
-    --input-text: #2c3e50;
-    --input-focus-border: #48c9b0;
-    --accent: #48c9b0;
-    --accent-dark: #41b49d;
-    --error: #e74c3c;
-    --switch-bg: #34495e;
-    --switch-icon: #f1c40f;
+    --bg-color: #f8f9fa; /* Light background color similar to your landing page */
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: rgba(0, 0, 0, 0.1);
+    --input-bg: rgba(233, 236, 239, 0.7);
+    --input-text: #212529;
+    --accent: #007bff; /* A standard blue accent color */
+    --accent-dark: #0056b3;
+    --error: #dc3545;
+    --switch-bg: #343a40;
+    --switch-icon: #f8f9fa;
 }
 
 html.dark {
-    --bg-start: #2c3e50;
-    --bg-end: #34495e;
-    --text-primary: #ecf0f1;
-    --text-secondary: #bdc3c7;
-    --card-bg: rgba(44, 62, 80, 0.65);
-    --card-border: rgba(52, 73, 94, 0.8);
-    --input-bg: rgba(52, 73, 94, 0.7);
-    --input-text: #ecf0f1;
-    --input-focus-border: #48c9b0;
-    --switch-bg: #ecf0f1;
-    --switch-icon: #48c9b0;
+    --bg-color: #212529;
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --card-bg: rgba(52, 58, 64, 0.75);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(73, 80, 87, 0.7);
+    --input-text: #f8f9fa;
+    --accent: #0d6efd;
+    --accent-dark: #3d8bfd;
+    --switch-bg: #f8f9fa;
+    --switch-icon: #343a40;
 }
 
+/* General body styling */
 body {
     font-family: 'Hind Siliguri', sans-serif;
-    background-image: url('https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=1974&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    background-color: var(--bg-end);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* Glassmorphism card effect */
 .glass-card {
     background-color: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--card-border);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 }
 
+/* Floating label styles */
 .floating-label-group {
     position: relative;
 }
@@ -72,6 +72,7 @@ body {
     font-weight: 600;
 }
 
+/* Tab slider for login/signup */
 .tab-slider {
     position: absolute;
     bottom: -2px;
@@ -81,6 +82,7 @@ body {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* Password strength indicator */
 .password-strength-bar {
     height: 5px;
     width: 0%;
@@ -88,10 +90,11 @@ body {
     border-radius: 2.5px;
     transition: all 0.3s ease;
 }
-.password-strength-bar.weak { width: 33%; background-color: #e74c3c; }
-.password-strength-bar.medium { width: 66%; background-color: #f1c40f; }
-.password-strength-bar.strong { width: 100%; background-color: #2ecc71; }
+.password-strength-bar.weak { width: 33%; background-color: #dc3545; }
+.password-strength-bar.medium { width: 66%; background-color: #ffc107; }
+.password-strength-bar.strong { width: 100%; background-color: #198754; }
 
+/* Loading spinner animation */
 .spinner {
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top-color: #ffffff;
@@ -101,3 +104,11 @@ body {
     animation: spin 1s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Quote fade animation */
+.quote-container {
+    transition: opacity 0.5s ease-in-out;
+}
+.quote-container.fade-out {
+    opacity: 0;
+}

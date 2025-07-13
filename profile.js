@@ -55,11 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Danger Zone
     const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const logoutBtn = document.getElementById('logout-btn'); // New Logout Button
 
     // Theme Switcher
     const themeOptions = document.querySelectorAll('.theme-option');
 
-    // Reading Goal Elements (NEW)
+    // Reading Goal Elements
     const goalProgressText = document.getElementById('goal-progress-text');
     const goalProgressBar = document.getElementById('goal-progress-bar');
     const goalUpdateForm = document.getElementById('goal-update-form');
@@ -221,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    // --- Reading Goal Functions (NEW) ---
+    // --- Reading Goal Functions ---
     const displayReadingGoal = (readCount, goal) => {
         const currentGoal = goal || 0;
         if (readingGoalInput) readingGoalInput.value = currentGoal > 0 ? currentGoal : '';
@@ -312,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Reading Goal Form Event Listener (NEW)
     if (goalUpdateForm) {
         goalUpdateForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -331,7 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 showToast('আপনার লক্ষ্য সফলভাবে সেভ হয়েছে!');
                 
-                // Refresh the goal display instantly
                 const { count, error: countError } = await _supabase
                     .from('books')
                     .select('*', { count: 'exact', head: true })
@@ -412,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const { error } = await _supabase.from('books').insert(booksToInsert);
                         if (error) throw error;
                         showToast(`সফলভাবে ${booksToInsert.length.toLocaleString('bn-BD')}টি বই ইম্পোর্ট করা হয়েছে!`, 'success');
-                        initializePage(); // Re-initialize all data
+                        initializePage();
                     } catch (error) {
                         console.error('Bulk insert error:', error);
                         showToast('বইগুলো ডাটাবেসে যোগ করতে সমস্যা হয়েছে।', 'error');
@@ -420,6 +419,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 error: (err) => showToast(`ফাইল পড়তে সমস্যা হয়েছে: ${err.message}`, 'error')
             });
+        });
+    }
+    
+    // --- New Logout Handler ---
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                showToast('লগ আউট করা হচ্ছে...', 'info');
+                const { error } = await _supabase.auth.signOut();
+                if (error) {
+                    throw error;
+                }
+                // Redirect to login page after a short delay to allow toast to be seen
+                setTimeout(() => {
+                    window.location.replace('login.html');
+                }, 1000);
+            } catch (error) {
+                console.error('Error logging out:', error);
+                showToast('লগ আউট করতে সমস্যা হয়েছে।', 'error');
+            }
         });
     }
 
@@ -437,7 +456,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayAllStats(books, shelfCount, quoteCount);
             renderAllCharts(books);
             displayUserBadges(userBadges);
-            // Display reading goal using data from initial profile fetch
             displayReadingGoal(readCount, profile?.reading_goal);
         }
     };
@@ -452,7 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             currentUser = user;
 
-            // Fetch all profile data at once, including the new reading_goal
             const { data: profile, error: profileError } = await _supabase
                 .from('profiles')
                 .select('username, avatar_url, reading_goal')
@@ -461,7 +478,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (profileError) {
                 console.error("Error fetching profile:", profileError);
-                // We can still proceed without profile data
             }
 
             const displayName = profile?.username || user.user_metadata?.full_name || 'ব্যবহারকারী';
@@ -476,7 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (profileAvatar) profileAvatar.src = avatarSrc;
             if (headerAvatar) headerAvatar.src = avatarSrc;
 
-            // Pass the fetched profile data to the content initializer
             await initializePageContent(profile);
 
         } catch (error) {

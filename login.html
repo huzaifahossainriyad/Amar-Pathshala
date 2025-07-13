@@ -13,28 +13,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Shared Theme Stylesheet (NEW) -->
-    <link rel="stylesheet" href="themes.css">
-    <!-- Shared Theme-switching Logic (NEW) -->
-    <script src="main.js" defer></script>
-
     <!-- External CSS -->
     <link rel="stylesheet" href="login.css">
 </head>
-<body class="text-[var(--text-primary)]">
+<body>
 
     <main class="flex w-full min-h-screen">
         <!-- Left Panel -->
-        <div class="hidden lg:flex w-2/5 items-center justify-center p-12 flex-col text-center relative overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&w=800&q=80');">
-            <div class="absolute inset-0 bg-black/60"></div>
+        <div class="hidden lg:flex w-2/5 items-center justify-center p-12 flex-col text-center relative overflow-hidden bg-gray-800">
+            <div class="absolute inset-0 bg-black/50"></div>
             <div class="z-10 text-white">
-                <h1 class="text-5xl font-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">আমার পাঠশালা</h1>
-                <p class="mt-4 text-xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">আপনার জ্ঞানের ডিজিটাল সংগ্রহশালা। প্রতিটি বই হোক এক একটি নতুন পৃথিবী।</p>
+                <h1 class="text-5xl font-bold mb-8" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">আমার পাঠশালা</h1>
+                
+                <!-- Quote Section -->
+                <div id="quote-container" class="quote-container min-h-[150px]">
+                    <p id="quote-text" class="text-xl mb-2" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);"></p>
+                    <p id="quote-author" class="text-lg font-semibold" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);"></p>
+                </div>
+                
+                <!-- Special Feature: New Quote Button -->
+                <button id="new-quote-btn" class="mt-8 px-6 py-2 border border-white rounded-full hover:bg-white hover:text-black transition-colors duration-300">নতুন উক্তি দেখুন</button>
             </div>
         </div>
 
         <!-- Right Panel -->
-        <div class="w-full lg:w-3/5 flex items-center justify-center p-6 sm:p-12">
+        <div class="w-full lg:w-3/5 flex items-center justify-center p-6 sm:p-12 relative">
             <div class="w-full max-w-md">
                 
                 <!-- Theme Toggle -->
@@ -126,7 +129,7 @@
                                 <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
                             </div>
                             <div class="relative flex justify-center text-sm">
-                                <span class="px-2 bg-[var(--card-bg)] text-[var(--text-secondary)]">অথবা ادامه দিন</span>
+                                <span class="px-2 bg-[var(--card-bg)] text-[var(--text-secondary)]">অথবা</span>
                             </div>
                         </div>
                         <div class="mt-6 grid grid-cols-2 gap-4">
@@ -141,11 +144,18 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Footer -->
+                <footer class="w-full text-center p-4 text-[var(--text-secondary)] text-sm mt-4">
+                    <p>© ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
+                    <p>ডিজাইন ও ডেভেলপমেন্টে - রিয়াদ হোসেন হুযাইফা</p>
+                </footer>
+
             </div>
         </div>
     </main>
 
-    <!-- Supabase Client Library (প্রয়োজনীয়) -->
+    <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- External JS -->
