@@ -1,44 +1,63 @@
 /* --- বেসিক এবং কাস্টম স্টাইল --- */
 body {
     font-family: 'Tiro Bangla', serif;
-    color: #4A3F35;
-    background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2098&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    color: var(--text-primary);
+    background-color: var(--bg-primary); /* Updated: Removed background image, added color */
 }
 
 /* --- সাধারণ সেকশন স্টাইল --- */
 .profile-section {
-    background-color: rgba(253, 248, 240, 0.92); /* #FDF8F0 with 92% opacity */
+    background-color: var(--bg-secondary);
     padding: 2rem;
     border-radius: 0.75rem; /* 12px */
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .section-title {
     font-size: 1.5rem; /* 24px */
     font-weight: 700;
-    color: #4A3F35;
+    color: var(--text-primary);
     margin-bottom: 1.5rem; /* 24px */
     padding-bottom: 0.5rem; /* 8px */
-    border-bottom: 2px solid #EAE0D5;
+    border-bottom: 2px solid var(--border-color);
 }
 
 /* --- পরিসংখ্যান কার্ডের জন্য স্টাইল --- */
 .stat-card {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: var(--bg-primary);
     padding: 1.5rem;
     border-radius: 0.5rem;
     text-align: center;
-    border-top: 4px solid #785A3E;
+    border-top: 4px solid var(--accent-primary);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(74, 63, 53, 0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
+
+.stat-title {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.stat-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
 
 /* --- ফাইল ইনপুট স্টাইল --- */
 .file-input {
@@ -55,9 +74,9 @@ body {
     width: 100%;
     text-align: center;
     padding: 0.75rem 1rem;
-    background-color: #fff;
-    color: #4A3F35;
-    border: 1px solid #EAE0D5;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     border-radius: 0.375rem;
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s;
@@ -66,13 +85,13 @@ body {
 
 .file-input:focus + .file-input-label,
 .file-input-label:hover {
-    background-color: #f8f5f0;
-    border-color: #785A3E;
+    background-color: var(--bg-secondary);
+    border-color: var(--accent-primary);
 }
 
 /* --- ডেঞ্জার জোন স্টাইল --- */
 .danger-zone {
-    background-color: rgba(255, 235, 238, 0.9); /* হালকা লাল ব্যাকগ্রাউন্ড */
+    background-color: #fef2f2; /* হালকা লাল ব্যাকগ্রাউন্ড */
     padding: 2rem;
     border-radius: 0.75rem;
     border: 2px solid #ef4444; /* লাল বর্ডার */
@@ -113,20 +132,10 @@ body {
     .section-title {
         font-size: 1.25rem; /* 20px */
     }
-
-    /* গ্রিড কলাম একটিতে পরিবর্তন করা */
-    .grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* মোবাইল ডিভাইস (480px পর্যন্ত) */
 @media (max-width: 480px) {
-    body {
-        background-image: none; /* ছোট স্ক্রিনে ব্যাকগ্রাউন্ড ইমেজ বাদ দেওয়া */
-        background-color: #FDF8F0;
-    }
-
     .profile-section {
         padding: 1rem;
         box-shadow: none; /* ছোট স্ক্রিনে শ্যাডো বাদ দেওয়া */
@@ -142,17 +151,13 @@ body {
         padding: 1rem;
     }
 
-    h3.text-4xl {
-        font-size: 2.25rem; /* 36px থেকে কমানো */
-    }
-
-    p.text-lg {
-        font-size: 1rem; /* 18px থেকে কমানো */
+    .stat-value {
+        font-size: 1.75rem; /* 28px */
     }
 
     /* বাটনগুলোর প্যাডিং কমানো */
-    .btn {
-        padding: 0.5rem 1rem;
+    .btn-primary, .btn-secondary {
+        padding: 0.6rem 1rem;
         font-size: 0.875rem; /* 14px */
     }
 }

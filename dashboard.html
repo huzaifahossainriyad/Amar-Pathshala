@@ -198,77 +198,93 @@
 
     <!-- Add/Edit Book Modal -->
     <div id="add-book-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-[#FDF8F0] dark:bg-gray-800 rounded-lg shadow-xl p-6 md:p-8 w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="modal-title" class="text-2xl font-bold text-[#4A3F35] dark:text-white">নতুন বই যোগ করুন</h2>
-                <button id="close-modal-btn-icon" class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white text-3xl leading-none">&times;</button>
+        <!-- MODAL CONTENT: Changed to a flex column with a max-height to prevent overflow on small screens -->
+        <div class="bg-[#FDF8F0] dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0 flex flex-col max-h-[90vh]" id="modal-content">
+            
+            <!-- MODAL HEADER: Fixed at the top, not scrollable -->
+            <div class="flex-shrink-0 p-6 md:p-8 border-b border-gray-300 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <h2 id="modal-title" class="text-2xl font-bold text-[#4A3F35] dark:text-white">নতুন বই যোগ করুন</h2>
+                    <button id="close-modal-btn-icon" class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white text-3xl leading-none">&times;</button>
+                </div>
             </div>
-            <div class="mb-6 border-b border-gray-300 dark:border-gray-700 pb-6">
-                <p class="text-md text-[#4A3F35] dark:text-gray-300 mb-3">বই খুঁজে স্বয়ংক্রিয়ভাবে তথ্য পূরণ করুন:</p>
-                <div class="flex gap-2">
-                    <input type="text" id="book-search-input" placeholder="বইয়ের নাম বা লেখক দিয়ে খুঁজুন..." class="flex-grow p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
-                    <button id="book-search-btn" class="bg-[#785A3E] text-white py-2 px-5 rounded-lg hover:bg-[#664c32] transition flex items-center justify-center">
-                        <span class="button-text">অনুসন্ধান</span>
-                        <div class="spinner hidden"></div>
-                    </button>
-                </div>
-                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto bg-white dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600"></div>
-            </div>
-            <form id="add-book-form" class="space-y-4">
-                <input type="hidden" id="edit-book-id">
-                <div>
-                    <label for="book-title" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">বইয়ের নাম</label>
-                    <input type="text" id="book-title" name="book-title" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
-                </div>
-                <div>
-                    <label for="book-author" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">লেখকের নাম</label>
-                    <input type="text" id="book-author" name="book-author" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
-                </div>
-                <div>
-                    <label for="book-cover-url" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">কভার ইমেজ লিঙ্ক (ঐচ্ছিক)</label>
-                    <input type="url" id="book-cover-url" name="book-cover-url" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
-                </div>
-                <div>
-                    <label for="book-page-count" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">পৃষ্ঠা সংখ্যা (ঐচ্ছিক)</label>
-                    <input type="number" id="book-page-count" name="book-page-count" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" min="0">
-                </div>
-                <div>
-                    <label for="book-genre" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ধরন (Genre)</label>
-                    <input type="text" id="book-genre" name="book-genre" placeholder="যেমন: উপন্যাস, কল্পবিজ্ঞান, থ্রিলার" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
-                </div>
-                <div>
-                    <label for="book-format" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ফরম্যাট</label>
-                    <select id="book-format" name="book-format" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
-                        <option value="পেপারব্যাক">পেপারব্যাক</option>
-                        <option value="হার্ডকভার">হার্ডকভার</option>
-                        <option value="ই-বুক">ই-বুক</option>
-                        <option value="অডিওবুক">অডিওবুক</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-2">শেলফ নির্বাচন করুন (ঐচ্ছিক)</label>
-                    <div id="modal-shelves-container" class="max-h-32 overflow-y-auto space-y-2 p-3 bg-white dark:bg-gray-700 border border-[#EAE0D5] dark:border-gray-600 rounded-md">
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">শেলফ লোড হচ্ছে...</p>
-                    </div>
-                </div>
 
-                <div>
-                    <label for="book-status" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">স্ট্যাটাস</label>
-                    <select id="book-status" name="book-status" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
-                        <option value="want_to_read">পড়তে চাই</option>
-                        <option value="reading">পড়ছি</option>
-                        <option value="read">পড়া শেষ</option>
-                    </select>
+            <!-- MODAL BODY: This area will scroll if content is too long -->
+            <div class="overflow-y-auto p-6 md:p-8">
+                <div class="mb-6 border-b border-gray-300 dark:border-gray-700 pb-6">
+                    <p class="text-md text-[#4A3F35] dark:text-gray-300 mb-3">বই খুঁজে স্বয়ংক্রিয়ভাবে তথ্য পূরণ করুন:</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="book-search-input" placeholder="বইয়ের নাম বা লেখক দিয়ে খুঁজুন..." class="flex-grow p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                        <button id="book-search-btn" class="bg-[#785A3E] text-white py-2 px-5 rounded-lg hover:bg-[#664c32] transition flex items-center justify-center">
+                            <span class="button-text">অনুসন্ধান</span>
+                            <div class="spinner hidden"></div>
+                        </button>
+                    </div>
+                    <div id="search-results" class="mt-4 max-h-48 overflow-y-auto bg-white dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600"></div>
                 </div>
-                <div class="flex justify-end space-x-4 pt-4">
+                <form id="add-book-form" class="space-y-4">
+                    <input type="hidden" id="edit-book-id">
+                    <div>
+                        <label for="book-title" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">বইয়ের নাম</label>
+                        <input type="text" id="book-title" name="book-title" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="book-author" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">লেখকের নাম</label>
+                        <input type="text" id="book-author" name="book-author" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="book-cover-url" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">কভার ইমেজ লিঙ্ক (ঐচ্ছিক)</label>
+                        <input type="url" id="book-cover-url" name="book-cover-url" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                    </div>
+                    <div>
+                        <label for="book-page-count" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">পৃষ্ঠা সংখ্যা (ঐচ্ছিক)</label>
+                        <input type="number" id="book-page-count" name="book-page-count" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" min="0">
+                    </div>
+                    <div>
+                        <label for="book-genre" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ধরন (Genre)</label>
+                        <input type="text" id="book-genre" name="book-genre" placeholder="যেমন: উপন্যাস, কল্পবিজ্ঞান, থ্রিলার" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                    </div>
+                    <div>
+                        <label for="book-format" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ফরম্যাট</label>
+                        <select id="book-format" name="book-format" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                            <option value="পেপারব্যাক">পেপারব্যাক</option>
+                            <option value="হার্ডকভার">হার্ডকভার</option>
+                            <option value="ই-বুক">ই-বুক</option>
+                            <option value="অডিওবুক">অডিওবুক</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-2">শেলফ নির্বাচন করুন (ঐচ্ছিক)</label>
+                        <div id="modal-shelves-container" class="max-h-32 overflow-y-auto space-y-2 p-3 bg-white dark:bg-gray-700 border border-[#EAE0D5] dark:border-gray-600 rounded-md">
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">শেলফ লোড হচ্ছে...</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="book-status" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">স্ট্যাটাস</label>
+                        <select id="book-status" name="book-status" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                            <option value="want_to_read">পড়তে চাই</option>
+                            <option value="reading">পড়ছি</option>
+                            <option value="read">পড়া শেষ</option>
+                        </select>
+                    </div>
+                    <!-- Note: Buttons have been moved to the modal footer -->
+                </form>
+            </div>
+
+            <!-- MODAL FOOTER: Fixed at the bottom, not scrollable -->
+            <div class="flex-shrink-0 p-6 md:p-8 border-t border-gray-300 dark:border-gray-700">
+                <div class="flex justify-end space-x-4">
                     <button type="button" id="close-modal-btn" class="py-2 px-5 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">বন্ধ করুন</button>
-                    <button type="submit" id="save-book-btn" class="py-2 px-5 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center min-w-[90px]">
+                    <!-- The "form" attribute links this button to the form in the modal body, allowing it to trigger the form submission -->
+                    <button type="submit" id="save-book-btn" form="add-book-form" class="py-2 px-5 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center min-w-[90px]">
                         <span class="button-text">সেভ করুন</span>
                         <div class="spinner hidden"></div>
                     </button>
                 </div>
-            </form>
+            </div>
+
         </div>
     </div>
 
