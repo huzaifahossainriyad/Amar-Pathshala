@@ -1,0 +1,58 @@
+/*
+ * Filename: loans.css
+ * Application: আমার পাঠশালা
+ * Purpose: ধার দেওয়া-নেওয়া পেজের জন্য কাস্টম স্টাইল।
+ * Author: রিয়াদ হোসেন হুযাইফা-এর জন্য Gemini দ্বারা তৈরি
+ * Date: 13 July 2025
+ */
+
+/* দ্রষ্টব্য: আমরা DaisyUI এবং Tailwind CSS ব্যবহার করছি, 
+  তাই বেশিরভাগ স্টাইল ক্লাস হিসেবে HTML-এ প্রয়োগ করা হয়েছে।
+  এখানে শুধুমাত্র কাস্টম ভেরিয়েবল-ভিত্তিক স্টাইলগুলো যোগ করা হলো।
+*/
+
+/* অ্যাক্টিভ ট্যাবের জন্য স্টাইল */
+.tab-active {
+    /* --accent-primary ভেরিয়েবল থেকে অ্যাকসেন্ট রঙ ব্যবহার করা হয়েছে */
+    color: var(--accent-primary, oklch(var(--p)));
+    border-color: var(--accent-primary, oklch(var(--p)));
+    font-weight: 600;
+}
+
+/* প্রতিটি লোন আইটেমের জন্য কার্ড স্টাইল */
+.loan-card {
+    /* --bg-card ভেরিয়েবল থেকে কার্ডের الخلفية রঙ ব্যবহার করা হয়েছে */
+    background-color: var(--bg-card, oklch(var(--b1)));
+    border: 1px solid oklch(var(--b3));
+    padding: 1.5rem; /* 24px */
+    border-radius: 0.75rem; /* 12px */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* কার্ডের উপর মাউস হোভার করলে ইফেক্ট */
+.loan-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ছোট স্ক্রিনের জন্য কার্ডের লেআউট সমন্বয় */
+@media (max-width: 640px) {
+    .loan-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .loan-card > div:last-child {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 0.5rem;
+    }
+}

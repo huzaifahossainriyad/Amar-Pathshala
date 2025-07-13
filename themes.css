@@ -1,0 +1,57 @@
+/* themes.css */
+
+/* This file defines the color palettes for different themes in the application.
+  We use CSS variables to make theme switching easy and maintainable.
+*/
+
+/* Default Theme (Light)
+  This is the base theme applied to the :root selector.
+  It features a light, airy color scheme with brown and beige tones.
+*/
+:root {
+  --bg-primary: #FDF8F0; /* Primary background color, a very light beige */
+  --bg-secondary: #FBF3E9; /* Secondary background, slightly darker beige */
+  --bg-card: #FFFFFF; /* Card background, pure white for contrast */
+  --text-primary: #4A3F35; /* Primary text color, a dark brown */
+  --text-secondary: #785A3E; /* Secondary text color, a medium brown */
+  --accent-primary: #A07C5B; /* Primary accent color, a muted brown */
+  --border-color: #EAE0D5; /* Border color, a light grayish-brown */
+  --shadow-color: rgba(0, 0, 0, 0.05); /* Soft shadow color */
+}
+
+/* Dark Theme
+  Applied when the <html> element has the class 'theme-dark'.
+  This theme uses a dark background with lighter text for high contrast, suitable for low-light environments.
+*/
+html.theme-dark {
+  --bg-primary: #1a1a1a; /* Dark gray primary background */
+  --bg-secondary: #2c2c2c; /* Slightly lighter gray for secondary elements */
+  --bg-card: #383838; /* Card background, a medium gray */
+  --text-primary: #e0e0e0; /* Light gray for primary text */
+  --text-secondary: #b0b0b0; /* Muted light gray for secondary text */
+  --accent-primary: #c7a78a; /* A lighter, desaturated brown for accents */
+  --border-color: #4a4a4a; /* Dark gray border color */
+  --shadow-color: rgba(0, 0, 0, 0.2); /* More pronounced shadow for depth */
+}
+
+/* Paper Theme
+  Applied when the <html> element has the class 'theme-paper'.
+  This theme mimics the look of old paper, with a sepia-toned background and dark, classic text colors.
+*/
+html.theme-paper {
+  --bg-primary: #f5eeda; /* A yellowish, paper-like background */
+  --bg-secondary: #ede4d4; /* A slightly darker shade for secondary areas */
+  --bg-card: #fdf6e7; /* A very light, almost creamy card background */
+  --text-primary: #5b4636; /* A rich, dark brown for primary text */
+  --text-secondary: #8c6f58; /* A softer brown for secondary text */
+  --accent-primary: #a1887f; /* A muted, brownish-gray accent */
+  --border-color: #dcd0b3; /* A border color that complements the paper theme */
+  --shadow-color: rgba(0, 0, 0, 0.07); /* A soft, warm shadow */
+}
+
+/* Apply variables to body for global styling */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Tiro Bangla', serif;
+}

@@ -17,21 +17,35 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
+    <!-- Shared Theme Stylesheet -->
+    <link rel="stylesheet" href="themes.css">
+    <!-- Shared Theme-switching & Mobile Menu Logic -->
+    <script src="main.js" defer></script>
+
     <!-- External CSS -->
     <link rel="stylesheet" href="dashboard.css">
 </head>
-<body class="antialiased bg-[#FDF8F0]">
+<body class="antialiased bg-[#FDF8F0] dark:bg-gray-900">
 
     <!-- Header Section -->
-    <header id="header" class="bg-[#FDF8F0]/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <header id="header" class="bg-[#FDF8F0]/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm sticky top-0 z-40 transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl md:text-3xl font-bold" style="color: #4A3F35;">আমার পাঠশালা</a>
-            <div class="flex items-center space-x-4 md:space-x-6">
-                <span id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] font-medium hidden sm:block">স্বাগতম...</span>
-                <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300">
-                <a href="./profile.html" class="text-[#4A3F35] hover:text-[#785A3E] transition-colors" aria-label="প্রোফাইল ও সেটিংস">
+            <a href="./dashboard.html" class="text-2xl md:text-3xl font-bold text-[#4A3F35] dark:text-[#EAE0D5]">আমার পাঠশালা</a>
+            
+            <!-- Desktop Navigation & User Controls -->
+            <div class="hidden md:flex items-center space-x-4 md:space-x-6">
+                <div class="flex items-center space-x-1 lg:space-x-2 bg-white/60 dark:bg-gray-800/60 p-1 rounded-lg">
+                    <a href="./dashboard.html" class="text-sm font-semibold text-[#785A3E] dark:text-white bg-[#EAE0D5] dark:bg-indigo-600 px-3 py-2 rounded-md transition-colors">ড্যাশবোর্ড</a>
+                    <a href="./shelves.html" class="text-sm font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors">আমার শেলফ</a>
+                    <a href="./loans.html" class="text-sm font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors">ধার-দেনা</a>
+                    <a href="./quotes.html" class="text-sm font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors">আমার উক্তি</a>
+                </div>
+
+                <span id="user-welcome-message" class="text-sm md:text-base text-right text-[#4A3F35] dark:text-gray-300 font-medium hidden sm:block">স্বাগতম...</span>
+                <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
+                <a href="./profile.html" class="text-[#4A3F35] dark:text-gray-300 hover:text-[#785A3E] dark:hover:text-white transition-colors" aria-label="প্রোফাইল ও সেটিংস">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.242 1.417l-1.07 1.071c-.13.13-.242.289-.32.455a3.75 3.75 0 0 1 0 1.51c.078.166.19.326.32.456l1.07 1.071a1.125 1.125 0 0 1 .242 1.417l-1.296 2.247a1.125 1.125 0 0 1-1.37.49l-1.217-.456a3.75 3.75 0 0 1-1.075.124c-.073.044-.146.087-.22.127a3.75 3.75 0 0 1-.645.87l-.213 1.281c-.09.542-.56.94-1.11-.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281a3.75 3.75 0 0 1-.645-.87c-.074-.04-.147-.083-.22-.127a3.75 3.75 0 0 1-1.075-.124l-1.217.456a1.125 1.125 0 0 1-1.37-.49l-1.296-2.247a1.125 1.125 0 0 1 .242-1.417l1.07-1.071c.13-.13.242.289-.32-.455a3.75 3.75 0 0 1 0-1.51c-.078-.166-.19-.326-.32-.456l-1.07-1.071a1.125 1.125 0 0 1-.242-1.417l1.296-2.247a1.125 1.125 0 0 1 1.37-.49l1.217.456c.355.133.75.072 1.075-.124.073-.044.146-.087-.22-.127.332-.183.582-.496.645-.87l.213-1.281Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.242 1.417l-1.07 1.071c-.13.13-.242.289-.32.455a3.75 3.75 0 0 1 0 1.51c.078.166.19.326.32.456l1.07 1.071a1.125 1.125 0 0 1 .242 1.417l-1.296 2.247a1.125 1.125 0 0 1-1.37.49l-1.217-.456a3.75 3.75 0 0 1-1.075.124c-.073.044-.146.087-.22.127a3.75 3.75 0 0 1-.645.87l-.213 1.281c-.09.542-.56.94-1.11-.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281a3.75 3.75 0 0 1-.645-.87c-.074-.04-.147-.083-.22-.127a3.75 3.75 0 0 1-1.075-.124l-1.217.456a1.125 1.125 0 0 1-1.37-.49l-1.296-2.247a1.125 1.125 0 0 1 .242-1.417l1.07-1.071c.13-.13.242.289-.32-.455a3.75 3.75 0 0 1 0-1.51c-.078-.166-.19-.326-.32-.456l-1.07-1.071a1.125 1.125 0 0 1-.242-1.417l1.296-2.247a1.125 1.125 0 0 1 1.37.49l1.217.456c.355.133.75.072 1.075-.124.073-.044.146-.087-.22-.127.332-.183.582-.496.645-.87l.213-1.281Z" />
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
                 </a>
@@ -40,114 +54,208 @@
                     <div class="spinner hidden ml-2"></div>
                 </button>
             </div>
+
+            <!-- Mobile Menu Button (Hamburger) -->
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-[#4A3F35] dark:text-gray-300 focus:outline-none" aria-label="Open main menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
         </nav>
-    </header>
 
-    <main class="container mx-auto px-6 py-12">
-        <section id="bookshelf" class="relative">
-            <!-- Loading Indicator -->
-            <div id="loader" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60]">
-                <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-white"></div>
-            </div>
-
-            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center" style="color: #4A3F35;">আপনার বইয়ের তাক</h1>
-            
-            <div class="text-center mb-8">
-                <button id="add-book-btn" class="bg-[#785A3E] hover:bg-[#664c32] text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:-translate-y-0.5 shadow-lg">
-                    নতুন বই যোগ করুন
-                </button>
-            </div>
-
-            <!-- Reading Goal Section -->
-            <div id="reading-goal-section" class="mb-8 p-6 bg-white/60 rounded-lg shadow-md text-center">
-                <h2 id="goal-title" class="text-2xl font-bold text-[#4A3F35] mb-2">পড়ার লক্ষ্য লোড হচ্ছে...</h2>
-                <div id="goal-progress-bar-container" class="w-full bg-gray-200 rounded-full h-4 my-3 overflow-hidden"></div>
-                <p id="goal-progress-text" class="text-md text-gray-700 mb-4"></p>
-                <button id="set-goal-btn" class="bg-[#A07C5B] hover:bg-[#8a6a4d] text-white font-semibold py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                    লক্ষ্য ঠিক করুন
-                </button>
-            </div>
-
-            <!-- Library Search and Filter Section -->
-            <div id="library-controls" class="hidden mb-8 p-4 bg-white/50 rounded-lg shadow-md">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="md:col-span-2">
-                        <label for="library-search-input" class="sr-only">বই খুঁজুন</label>
-                        <input type="text" id="library-search-input" placeholder="আপনার বই খুঁজুন (নাম বা লেখক দিয়ে)..." class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white transition">
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="./dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-[#4A3F35] dark:text-white bg-[#EAE0D5] dark:bg-gray-700">ড্যাশবোর্ড</a>
+                <a href="./shelves.html" class="block px-3 py-2 rounded-md text-base font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700">আমার শেলফ</a>
+                <a href="./loans.html" class="block px-3 py-2 rounded-md text-base font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700">ধার-দেনা</a>
+                <a href="./quotes.html" class="block px-3 py-2 rounded-md text-base font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700">আমার উক্তি</a>
+                
+                <div class="pt-4 pb-3 border-t border-gray-300/50 dark:border-gray-700">
+                    <div class="flex items-center px-3">
+                        <div class="flex-shrink-0">
+                            <img id="mobile-header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
+                        </div>
+                        <div class="ml-3">
+                            <div id="mobile-user-welcome-message" class="text-base font-medium leading-none text-[#4A3F35] dark:text-white">স্বাগতম...</div>
+                        </div>
                     </div>
-                    <div>
-                        <label for="status-filter" class="sr-only">স্ট্যাটাস ফিল্টার</label>
-                        <select id="status-filter" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white transition">
-                            <option value="all">সব বই</option>
-                            <option value="reading">পড়ছি</option>
-                            <option value="read">পড়া শেষ</option>
-                            <option value="want_to_read">পড়তে চাই (অগ্রাধিকার)</option>
-                        </select>
+                    <div class="mt-3 space-y-1">
+                        <a href="./profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700">প্রোফাইল ও সেটিংস</a>
+                        <button id="mobile-logout-button" class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-[#4A3F35] dark:text-gray-300 hover:bg-[#EAE0D5]/70 dark:hover:bg-gray-700">লগআউট</button>
                     </div>
                 </div>
             </div>
+        </div>
+    </header>
 
-            <!-- Empty State Message -->
-            <div id="empty-state" class="hidden text-center p-8 bg-white/60 rounded-lg shadow-inner">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                </svg>
-                <h3 class="mt-2 text-xl font-semibold text-[#4A3F35]">আপনার পাঠশালা এখনো খালি</h3>
-                <p class="mt-1 text-md text-gray-600">আপনি এখনো কোনো বই যোগ করেননি। "নতুন বই যোগ করুন" বাটনে ক্লিক করে আপনার প্রথম বইটি যোগ করুন!</p>
-            </div>
+    <main class="container mx-auto px-6 py-12">
+        <!-- Loading Indicator -->
+        <div id="loader" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60]">
+            <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-white"></div>
+        </div>
 
-            <!-- Books Container -->
-            <div id="books-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 min-h-[40vh]">
-                <!-- বইয়ের কার্ডগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে যোগ করা হবে -->
+        <!-- Reading Goal Section -->
+        <div class="dashboard-section mb-8">
+            <section id="reading-goal-section" class="p-6 bg-white/60 dark:bg-gray-800/60 rounded-lg shadow-md text-center">
+                <h2 id="goal-title" class="text-2xl font-bold text-[#4A3F35] dark:text-white mb-2">পড়ার লক্ষ্য লোড হচ্ছে...</h2>
+                <div id="goal-progress-bar-container" class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 my-3 overflow-hidden"></div>
+                <p id="goal-progress-text" class="text-md text-gray-700 dark:text-gray-300 mb-4"></p>
+                <button id="set-goal-btn" class="bg-[#A07C5B] hover:bg-[#8a6a4d] text-white font-semibold py-2 px-5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                    লক্ষ্য ঠিক করুন
+                </button>
+            </section>
+        </div>
+
+        <!-- Bookshelf Section -->
+        <div class="dashboard-section mb-8">
+            <section id="bookshelf" class="relative">
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center text-[#4A3F35] dark:text-white">আপনার বইয়ের তাক</h1>
+                
+                <div class="text-center mb-8">
+                    <button id="add-book-btn" class="bg-[#785A3E] hover:bg-[#664c32] text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:-translate-y-0.5 shadow-lg">
+                        নতুন বই যোগ করুন
+                    </button>
+                </div>
+
+                <!-- Library Search and Filter Section -->
+                <div id="library-controls" class="hidden mb-8 p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="md:col-span-2">
+                            <label for="library-search-input" class="sr-only">বই খুঁজুন</label>
+                            <input type="text" id="library-search-input" placeholder="আপনার বই খুঁজুন (নাম বা লেখক দিয়ে)..." class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white transition">
+                        </div>
+                        <div>
+                            <label for="status-filter" class="sr-only">স্ট্যাটাস ফিল্টার</label>
+                            <select id="status-filter" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white transition">
+                                <option value="all">সব বই</option>
+                                <option value="reading">পড়ছি</option>
+                                <option value="read">পড়া শেষ</option>
+                                <option value="want_to_read">পড়তে চাই (অগ্রাধিকার)</option>
+                                <option value="on_loan">ধারে দেওয়া</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="custom-shelf-filter" class="sr-only">কাস্টম শেলফ ফিল্টার</label>
+                            <select id="custom-shelf-filter" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white transition">
+                                <option value="all">সব শেলফ</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State Message -->
+                <div id="empty-state" class="hidden text-center p-8 bg-white/60 dark:bg-gray-800/60 rounded-lg shadow-inner">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
+                    <h3 class="mt-2 text-xl font-semibold text-[#4A3F35] dark:text-white">আপনার পাঠশালা এখনো খালি</h3>
+                    <p class="mt-1 text-md text-gray-600 dark:text-gray-400">আপনি এখনো কোনো বই যোগ করেননি। "নতুন বই যোগ করুন" বাটনে ক্লিক করে আপনার প্রথম বইটি যোগ করুন!</p>
+                </div>
+
+                <!-- Books Container: Correct grid classes are applied here -->
+                <div id="books-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <!-- Book cards will be dynamically inserted here by dashboard.js -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Loan Out Modal -->
+        <div id="loan-out-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+            <div class="bg-[#FDF8F0] dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md transform transition-all duration-300">
+                <h2 class="text-2xl font-bold text-[#4A3F35] dark:text-white mb-6 text-center">বই ধার দিন</h2>
+                <form id="loan-out-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">বইয়ের নাম</label>
+                        <h4 id="loan-book-title" class="w-full p-3 border border-transparent rounded-md bg-gray-100/70 dark:bg-gray-700/70 text-gray-700 dark:text-gray-200 font-semibold"></h4>
+                    </div>
+                    <div>
+                        <label for="borrower-name" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ধারগ্রহীতার নাম</label>
+                        <input type="text" id="borrower-name" name="borrower-name" placeholder="ধারগ্রহীতার নাম লিখুন" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="due-date" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ফেরতের সম্ভাব্য তারিখ</label>
+                        <input type="date" id="due-date" name="due-date" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
+                    </div>
+                    <div class="flex justify-end space-x-4 pt-4">
+                        <button type="button" id="cancel-loan-out-btn" class="py-2 px-5 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">বন্ধ করুন</button>
+                        <button type="submit" class="py-2 px-5 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition">নিশ্চিত করুন</button>
+                    </div>
+                </form>
             </div>
-        </section>
+        </div>
+
     </main>
 
-    <footer class="text-white py-8 mt-12" style="background-color: #4A3F35;">
-        <div class="container mx-auto px-6 text-center text-gray-300">
-            <p>&copy; ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
-        </div>
+    <footer class="text-white py-8 mt-12 bg-[#4A3F35] dark:bg-gray-800">
+        <div class="container mx-auto px-6 text-center text-gray-300 dark:text-gray-400">
+ 			<p class="mb-2">&copy; ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
+ 			<p>ডিজাইন ও ডেভেলপমেন্ট - <a href="https://www.facebook.com/riyadhossainhuzaifa.humayra/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline text-[#EAE0D5] dark:text-indigo-400">রিয়াদ হোসেন হুযাইফা</a></p>
+ 		</div>
     </footer>
 
     <!-- Add/Edit Book Modal -->
     <div id="add-book-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-[#FDF8F0] rounded-lg shadow-xl p-6 md:p-8 w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+        <div class="bg-[#FDF8F0] dark:bg-gray-800 rounded-lg shadow-xl p-6 md:p-8 w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="modal-title" class="text-2xl font-bold text-[#4A3F35]">নতুন বই যোগ করুন</h2>
-                <button id="close-modal-btn-icon" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+                <h2 id="modal-title" class="text-2xl font-bold text-[#4A3F35] dark:text-white">নতুন বই যোগ করুন</h2>
+                <button id="close-modal-btn-icon" class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white text-3xl leading-none">&times;</button>
             </div>
-            <div class="mb-6 border-b border-gray-300 pb-6">
-                <p class="text-md text-[#4A3F35] mb-3">বই খুঁজে স্বয়ংক্রিয়ভাবে তথ্য পূরণ করুন:</p>
+            <div class="mb-6 border-b border-gray-300 dark:border-gray-700 pb-6">
+                <p class="text-md text-[#4A3F35] dark:text-gray-300 mb-3">বই খুঁজে স্বয়ংক্রিয়ভাবে তথ্য পূরণ করুন:</p>
                 <div class="flex gap-2">
-                    <input type="text" id="book-search-input" placeholder="বইয়ের নাম বা লেখক দিয়ে খুঁজুন..." class="flex-grow p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white">
+                    <input type="text" id="book-search-input" placeholder="বইয়ের নাম বা লেখক দিয়ে খুঁজুন..." class="flex-grow p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
                     <button id="book-search-btn" class="bg-[#785A3E] text-white py-2 px-5 rounded-lg hover:bg-[#664c32] transition flex items-center justify-center">
                         <span class="button-text">অনুসন্ধান</span>
                         <div class="spinner hidden"></div>
                     </button>
                 </div>
-                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto bg-white rounded-md border border-gray-200"></div>
+                <div id="search-results" class="mt-4 max-h-48 overflow-y-auto bg-white dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600"></div>
             </div>
             <form id="add-book-form" class="space-y-4">
                 <input type="hidden" id="edit-book-id">
                 <div>
-                    <label for="book-title" class="block text-sm font-medium text-[#4A3F35] mb-1">বইয়ের নাম</label>
-                    <input type="text" id="book-title" name="book-title" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required>
+                    <label for="book-title" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">বইয়ের নাম</label>
+                    <input type="text" id="book-title" name="book-title" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
                 </div>
                 <div>
-                    <label for="book-author" class="block text-sm font-medium text-[#4A3F35] mb-1">লেখকের নাম</label>
-                    <input type="text" id="book-author" name="book-author" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required>
+                    <label for="book-author" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">লেখকের নাম</label>
+                    <input type="text" id="book-author" name="book-author" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required>
                 </div>
                 <div>
-                    <label for="book-cover-url" class="block text-sm font-medium text-[#4A3F35] mb-1">কভার ইমেজ লিঙ্ক (ঐচ্ছিক)</label>
-                    <input type="url" id="book-cover-url" name="book-cover-url" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white">
+                    <label for="book-cover-url" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">কভার ইমেজ লিঙ্ক (ঐচ্ছিক)</label>
+                    <input type="url" id="book-cover-url" name="book-cover-url" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
                 </div>
                 <div>
-                    <label for="book-page-count" class="block text-sm font-medium text-[#4A3F35] mb-1">পৃষ্ঠা সংখ্যা (ঐচ্ছিক)</label>
-                    <input type="number" id="book-page-count" name="book-page-count" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" min="0">
+                    <label for="book-page-count" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">পৃষ্ঠা সংখ্যা (ঐচ্ছিক)</label>
+                    <input type="number" id="book-page-count" name="book-page-count" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" min="0">
                 </div>
                 <div>
-                    <label for="book-status" class="block text-sm font-medium text-[#4A3F35] mb-1">স্ট্যাটাস</label>
-                    <select id="book-status" name="book-status" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white">
+                    <label for="book-genre" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ধরন (Genre)</label>
+                    <input type="text" id="book-genre" name="book-genre" placeholder="যেমন: উপন্যাস, কল্পবিজ্ঞান, থ্রিলার" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                </div>
+                <div>
+                    <label for="book-format" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">ফরম্যাট</label>
+                    <select id="book-format" name="book-format" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
+                        <option value="পেপারব্যাক">পেপারব্যাক</option>
+                        <option value="হার্ডকভার">হার্ডকভার</option>
+                        <option value="ই-বুক">ই-বুক</option>
+                        <option value="অডিওবুক">অডিওবুক</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-2">শেলফ নির্বাচন করুন (ঐচ্ছিক)</label>
+                    <div id="modal-shelves-container" class="max-h-32 overflow-y-auto space-y-2 p-3 bg-white dark:bg-gray-700 border border-[#EAE0D5] dark:border-gray-600 rounded-md">
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">শেলফ লোড হচ্ছে...</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="book-status" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-1">স্ট্যাটাস</label>
+                    <select id="book-status" name="book-status" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white">
                         <option value="want_to_read">পড়তে চাই</option>
                         <option value="reading">পড়ছি</option>
                         <option value="read">পড়া শেষ</option>
@@ -166,12 +274,12 @@
 
     <!-- Set Goal Modal -->
     <div id="goal-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-[#FDF8F0] rounded-lg shadow-xl p-8 w-full max-w-sm transform transition-all duration-300">
-            <h2 class="text-2xl font-bold text-[#4A3F35] mb-6 text-center">আপনার পড়ার লক্ষ্য ঠিক করুন</h2>
+        <div class="bg-[#FDF8F0] dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-sm transform transition-all duration-300">
+            <h2 class="text-2xl font-bold text-[#4A3F35] dark:text-white mb-6 text-center">আপনার পড়ার লক্ষ্য ঠিক করুন</h2>
             <form id="goal-form">
                 <div>
-                    <label for="goal-input" class="block text-sm font-medium text-[#4A3F35] mb-2">এই বছরে কয়টি বই পড়তে চান?</label>
-                    <input type="number" id="goal-input" name="goal-input" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required min="1">
+                    <label for="goal-input" class="block text-sm font-medium text-[#4A3F35] dark:text-gray-300 mb-2">এই বছরে কয়টি বই পড়তে চান?</label>
+                    <input type="number" id="goal-input" name="goal-input" class="w-full p-3 border border-[#EAE0D5] dark:border-gray-600 rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white dark:bg-gray-700 dark:text-white" required min="1">
                 </div>
                 <div class="flex justify-end space-x-4 mt-8">
                     <button type="button" id="close-goal-modal-btn" class="py-2 px-5 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">বন্ধ করুন</button>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার শেলফসমূহ - আমার পাঠশালা</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts (Tiro Bangla) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+
+    <!-- Toastify.js for Notifications -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
+    <!-- Shared CSS -->
+    <link rel="stylesheet" href="themes.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Tiro Bangla', serif;
+        }
+    </style>
+</head>
+<body class="bg-base-200 text-base-content">
+
+    <!-- Updated Header -->
+    <header class="bg-base-100/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Site Title -->
+                <a href="dashboard.html" class="text-2xl font-bold text-primary">আমার পাঠশালা</a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="dashboard.html" class="px-3 py-2 rounded-md text-base-content hover:text-primary transition-colors duration-300">ড্যাশবোর্ড</a>
+                    <a href="shelves.html" class="px-3 py-2 rounded-md font-bold text-primary">আমার শেলফ</a>
+                    <a href="quotes.html" class="px-3 py-2 rounded-md text-base-content hover:text-primary transition-colors duration-300">আমার উক্তি</a>
+                    <a href="profile.html" class="px-3 py-2 rounded-md text-base-content hover:text-primary transition-colors duration-300">প্রোফাইল</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-open-icon" class="h-6 w-6 block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        <svg id="menu-close-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-base-content hover:bg-base-200">ড্যাশবোর্ড</a>
+                <a href="shelves.html" class="block px-3 py-2 rounded-md text-base font-medium bg-primary text-primary-content">আমার শেলফ</a>
+                <a href="quotes.html" class="block px-3 py-2 rounded-md text-base font-medium text-base-content hover:bg-base-200">আমার উক্তি</a>
+                <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-base-content hover:bg-base-200">প্রোফাইল</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-6 py-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 border-b-2 border-blue-500 pb-2">
+            আপনার কাস্টম শেলফসমূহ
+        </h1>
+
+        <!-- Create New Shelf Form -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">নতুন শেলফ তৈরি করুন</h2>
+            <form id="create-shelf-form" class="flex flex-col sm:flex-row items-stretch gap-4">
+                <input 
+                    type="text" 
+                    id="shelf-name-input" 
+                    placeholder="নতুন শেলফের নাম দিন..." 
+                    class="flex-grow w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                    required
+                >
+                <button 
+                    type="submit"
+                    id="create-shelf-button"
+                    class="bg-blue-600 text-white font-bold px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105"
+                >
+                    <span class="button-text">শেলফ তৈরি করুন</span>
+                    <span class="button-loader hidden">প্রসেসিং...</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Shelves Display Area -->
+        <div>
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-10">
+                <p class="text-lg text-gray-500">শেলফ লোড হচ্ছে...</p>
+            </div>
+
+            <!-- Shelves Grid Container -->
+            <div id="shelves-grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Shelf cards will be dynamically inserted here by shelves.js -->
+            </div>
+
+            <!-- Empty State Message -->
+            <div id="empty-state-message" class="hidden text-center bg-white p-10 rounded-lg shadow-md">
+                <p class="text-xl text-gray-500">আপনি এখনো কোনো কাস্টম শেলফ তৈরি করেননি।</p>
+                <p class="text-gray-400 mt-2">উপরের ফর্মটি ব্যবহার করে আপনার প্রথম শেলফ তৈরি করুন।</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Supabase and Config (ensure these are loaded before shelves.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <!-- Main shared script -->
+    <script src="main.js"></script>
+    <!-- Page-specific script -->
+    <script src="shelves.js" defer></script>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOpenIcon = document.getElementById('menu-open-icon');
+            const menuCloseIcon = document.getElementById('menu-close-icon');
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    menuOpenIcon.classList.toggle('block');
+                    menuOpenIcon.classList.toggle('hidden');
+                    menuCloseIcon.classList.toggle('hidden');
+                    menuCloseIcon.classList.toggle('block');
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

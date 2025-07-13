@@ -1,6 +1,6 @@
-/* --- New Body Style with Background Image --- */
+/* --- Body Style --- */
 body {
-    background-image: url('https://images.unsplash.com/photo-1568667256549-094345857637?q=80&w=1915&auto=format&fit=crop');
+    background-color: var(--bg-primary);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -23,6 +23,15 @@ body {
         padding: 2rem;
     }
 }
+
+/* --- New reusable class for dashboard sections --- */
+.dashboard-section {
+    background-color: var(--bg-card);
+    padding: 1.5rem; /* 24px */
+    border-radius: 0.75rem; /* 12px */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
 
 /* --- *** নতুন সংযোজন: বইয়ের কার্ডকে ক্লিকেবল করার জন্য স্টাইল *** --- */
 .book-card-link {

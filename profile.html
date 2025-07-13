@@ -20,22 +20,100 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Papaparse CSV Parser CDN (NEW) -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <!-- Shared Theme Stylesheet -->
+    <link rel="stylesheet" href="themes.css">
+    <!-- Shared Theme-switching Logic -->
+    <script src="main.js" defer></script>
+
     <!-- External CSS -->
     <link rel="stylesheet" href="profile.css">
+
+    <style>
+        /* Styles for the theme options */
+        .theme-option {
+            cursor: pointer; padding: 1rem; border-radius: 0.5rem;
+            border: 2px solid var(--border-color); transition: all 0.3s ease;
+            text-align: center; font-weight: 500; position: relative;
+        }
+        .theme-option:hover {
+            border-color: var(--text-secondary); background-color: var(--bg-secondary);
+        }
+        .theme-option.active {
+            border-color: var(--accent-primary); background-color: var(--accent-primary);
+            color: white; font-weight: bold;
+        }
+        .theme-option.active::after {
+            content: '✔'; position: absolute; top: 0.5rem; right: 0.75rem; font-size: 1rem;
+        }
+        /* Style for badge container */
+        .badge-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .badge-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .badge-icon {
+            font-size: 3rem; /* Larger icon */
+            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+        }
+        .badge-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .badge-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+    </style>
 </head>
 <body class="antialiased">
 
-    <!-- Header Section -->
-    <header class="bg-[#FDF8F0]/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="./dashboard.html" class="text-2xl md:text-3xl font-bold text-[#4A3F35] hover:text-[#785A3E] transition-colors">
-                &larr; ড্যাশবোর্ডে ফিরে যান
-            </a>
-            <div class="flex items-center space-x-4">
-                <p id="user-name-header" class="text-sm md:text-base text-right text-[#4A3F35] font-medium"></p>
-                <img id="header-avatar" src="https://placehold.co/40x40/EAE0D5/4A3F35?text=?" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300">
+    <!-- Updated Header -->
+    <header class="bg-base-100/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Site Title -->
+                <a href="dashboard.html" class="text-2xl font-bold text-primary">আমার পাঠশালা</a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="dashboard.html" class="px-3 py-2 rounded-md text-base-content hover:text-primary transition-colors duration-300">ড্যাশবোর্ড</a>
+                    <a href="shelves.html" class="px-3 py-2 rounded-md text-base-content hover:text-primary transition-colors duration-300">আমার শেলফ</a>
+                    <a href="quotes.html" class="px-3 py-2 rounded-md text-base-content hover:text-primary transition-colors duration-300">আমার উক্তি</a>
+                    <a href="profile.html" class="px-3 py-2 rounded-md font-bold text-primary">প্রোফাইল</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-open-icon" class="h-6 w-6 block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        <svg id="menu-close-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
             </div>
-        </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-base-content hover:bg-base-200">ড্যাশবোর্ড</a>
+                <a href="shelves.html" class="block px-3 py-2 rounded-md text-base font-medium text-base-content hover:bg-base-200">আমার শেলফ</a>
+                <a href="quotes.html" class="block px-3 py-2 rounded-md text-base font-medium text-base-content hover:bg-base-200">আমার উক্তি</a>
+                <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium bg-primary text-primary-content">প্রোফাইল</a>
+            </div>
+        </div>
     </header>
 
     <main class="container mx-auto px-6 py-12">
@@ -46,29 +124,29 @@
                 <section id="profile-info-section" class="profile-section">
                     <h2 class="section-title">প্রোফাইল তথ্য</h2>
                     <div class="text-center mb-6">
-                        <img id="profile-avatar" src="https://placehold.co/128x128/EAE0D5/4A3F35?text=?" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                        <img id="profile-avatar" src="https://placehold.co/128x128/EAE0D5/4A3F35?text=?" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mx-auto">
                     </div>
                     <form id="name-update-form" class="space-y-4">
                         <div>
-                            <label for="full-name" class="block text-sm font-medium text-[#4A3F35] mb-1">পুরো নাম</label>
-                            <input type="text" id="full-name" name="full-name" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white">
+                            <label for="full-name" class="block text-sm font-medium text-primary mb-1">পুরো নাম</label>
+                            <input type="text" id="full-name" name="full-name" class="input-field">
                         </div>
-                        <button type="submit" id="update-name-btn" class="w-full py-2 px-6 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center shadow-md">
+                        <button type="submit" id="update-name-btn" class="btn-primary w-full">
                             <span class="button-text">নাম আপডেট করুন</span>
                             <div class="spinner hidden"></div>
                         </button>
                     </form>
-                    <hr class="my-6 border-gray-300">
+                    <hr class="my-6 border-base-300">
                     <!-- Avatar Upload Section -->
                     <form id="avatar-upload-form" class="space-y-4">
                          <div>
-                            <label for="avatar-upload" class="block text-sm font-medium text-[#4A3F35] mb-2">প্রোফাইল ছবি পরিবর্তন করুন</label>
+                            <label for="avatar-upload" class="block text-sm font-medium text-primary mb-2">প্রোফাইল ছবি পরিবর্তন করুন</label>
                             <input type="file" id="avatar-upload" name="avatar-upload" accept="image/png, image/jpeg" class="file-input">
                             <label for="avatar-upload" class="file-input-label">
                                 ফাইল বাছাই করুন
                             </label>
                          </div>
-                        <button type="submit" id="upload-avatar-btn" class="w-full py-2 px-6 bg-[#A07C5B] text-white rounded-lg hover:bg-[#8a6a4d] transition flex items-center justify-center shadow-md" disabled>
+                        <button type="submit" id="upload-avatar-btn" class="btn-secondary w-full" disabled>
                             <span class="button-text">ছবি আপলোড করুন</span>
                             <div class="spinner hidden"></div>
                         </button>
@@ -78,50 +156,66 @@
 
             <!-- Right Column: Stats, Settings, etc. -->
             <div class="lg:col-span-2 space-y-8">
-                <!-- Reading Statistics Section (UPDATED) -->
+                <!-- Reading Statistics Section (UPGRADED) -->
                 <section id="reading-stats" class="profile-section">
                     <h2 class="section-title">আপনার পড়ার পরিসংখ্যান</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Stat Card 1: Finished Reading -->
-                        <div class="stat-card">
-                            <h3 class="text-lg font-semibold text-gray-600 mb-1">পড়া শেষ</h3>
-                            <div id="stats-read-count" class="text-4xl font-bold text-[#785A3E]">...</div>
-                            <p class="text-gray-500 mt-1">টি বই</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <div class="stat-card"><h3 class="stat-title">পড়া শেষ</h3><div id="stats-read-count" class="stat-value">...</div><p class="stat-subtitle">টি বই</p></div>
+                        <div class="stat-card"><h3 class="stat-title">এখন পড়ছি</h3><div id="stats-reading-count" class="stat-value">...</div><p class="stat-subtitle">টি বই</p></div>
+                        <div class="stat-card"><h3 class="stat-title">পড়ার তালিকায়</h3><div id="stats-want-to-read-count" class="stat-value">...</div><p class="stat-subtitle">টি বই</p></div>
+                        <!-- NEW Stat Cards -->
+                        <div class="stat-card"><h3 class="stat-title">কাস্টম শেলফ</h3><div id="stats-shelf-count" class="stat-value">...</div><p class="stat-subtitle">টি শেলফ</p></div>
+                        <div class="stat-card"><h3 class="stat-title">সংরক্ষিত উক্তি</h3><div id="stats-quote-count" class="stat-value">...</div><p class="stat-subtitle">টি উক্তি</p></div>
+                    </div>
+                </section>
+
+                <!-- Reading Visualization Section (UPGRADED) -->
+                <section id="reading-visualization" class="profile-section">
+                    <h2 class="section-title">আপনার পড়ার অভ্যাস</h2>
+                    <div class="bg-base-200/80 p-4 rounded-lg shadow-inner mb-6">
+                        <canvas id="reading-chart" style="height: 250px; width: 100%;"></canvas>
+                    </div>
+                    <!-- NEW Chart Canvases -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-base-200/80 p-4 rounded-lg shadow-inner">
+                            <h3 class="text-lg font-semibold text-primary mb-3 text-center">বইয়ের ধরণ (Genre)</h3>
+                            <canvas id="genre-chart" style="height: 250px; width: 100%;"></canvas>
                         </div>
-                        <!-- Stat Card 2: Currently Reading -->
-                        <div class="stat-card">
-                            <h3 class="text-lg font-semibold text-gray-600 mb-1">এখন পড়ছি</h3>
-                            <div id="stats-reading-count" class="text-4xl font-bold text-[#785A3E]">...</div>
-                            <p class="text-gray-500 mt-1">টি বই</p>
-                        </div>
-                        <!-- Stat Card 3: Want to Read -->
-                        <div class="stat-card">
-                            <h3 class="text-lg font-semibold text-gray-600 mb-1">পড়ার তালিকায়</h3>
-                            <div id="stats-want-to-read-count" class="text-4xl font-bold text-[#785A3E]">...</div>
-                            <p class="text-gray-500 mt-1">টি বই</p>
+                        <div class="bg-base-200/80 p-4 rounded-lg shadow-inner">
+                             <h3 class="text-lg font-semibold text-primary mb-3 text-center">বইয়ের ফরম্যাট</h3>
+                            <canvas id="format-chart" style="height: 250px; width: 100%;"></canvas>
                         </div>
                     </div>
                 </section>
 
-                <!-- Reading Visualization Section -->
-                <section id="reading-visualization" class="profile-section">
-                    <h2 class="section-title">আপনার পড়ার অভ্যাস</h2>
-                    <div class="bg-white/80 p-4 rounded-lg shadow-inner">
-                        <canvas id="reading-chart" height="200"></canvas>
+                <!-- Achievements Section (NEW) -->
+                <section id="achievements" class="profile-section">
+                    <h2 class="section-title">অ্যাচিভমেন্ট ও ব্যাজসমূহ</h2>
+                    <div id="badges-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        <!-- Badges will be dynamically inserted here -->
                     </div>
                 </section>
 
                 <!-- Account Settings Section -->
                 <section id="account-settings" class="profile-section">
                     <h2 class="section-title">অ্যাকাউন্ট সেটিংস</h2>
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-primary mb-3">অ্যাপ থিম পরিবর্তন করুন</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="theme-option" data-theme="light">Light</div>
+                            <div class="theme-option" data-theme="dark">Dark</div>
+                            <div class="theme-option" data-theme="paper">Paper</div>
+                        </div>
+                    </div>
+                    <hr class="my-6 border-base-300">
                     <form id="password-update-form" class="space-y-4">
                         <div>
-                            <label for="new-password" class="block text-sm font-medium text-[#4A3F35] mb-1">নতুন পাসওয়ার্ড</label>
-                            <input type="password" id="new-password" name="new-password" class="w-full p-3 border border-[#EAE0D5] rounded-md focus:ring-[#785A3E] focus:border-[#785A3E] bg-white" required minlength="6">
-                            <p class="text-xs text-gray-500 mt-1">কমপক্ষে ৬ অক্ষরের হতে হবে।</p>
+                            <label for="new-password" class="block text-sm font-medium text-primary mb-1">নতুন পাসওয়ার্ড</label>
+                            <input type="password" id="new-password" name="new-password" class="input-field" required minlength="6">
+                            <p class="text-xs text-secondary mt-1">কমপক্ষে ৬ অক্ষরের হতে হবে।</p>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" id="update-password-btn" class="py-2 px-6 bg-[#785A3E] text-white rounded-lg hover:bg-[#664c32] transition flex items-center justify-center min-w-[120px] shadow-md">
+                            <button type="submit" id="update-password-btn" class="btn-primary min-w-[120px]">
                                 <span class="button-text">আপডেট করুন</span>
                                 <div class="spinner hidden"></div>
                             </button>
@@ -129,13 +223,31 @@
                     </form>
                 </section>
 
-                <!-- Data Management Section -->
+                <!-- Data Management Section (UPGRADED) -->
                 <section id="data-management" class="profile-section">
                     <h2 class="section-title">ডেটা ম্যানেজমেন্ট</h2>
-                    <button id="download-data-btn" class="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                        আমার সব ডেটা ডাউনলোড করুন (CSV)
-                    </button>
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-primary mb-2">আপনার ডেটা এক্সপোর্ট করুন</h3>
+                            <button id="download-data-btn" class="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                আমার সব ডেটা ডাউনলোড করুন (CSV)
+                            </button>
+                        </div>
+                        <hr class="border-base-300">
+                        <!-- NEW Goodreads Import Section -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-primary mb-2">Goodreads থেকে ইম্পোর্ট করুন</h3>
+                            <div class="bg-base-200 p-4 rounded-lg">
+                                <input type="file" id="csv-import-input" accept=".csv" class="file-input mb-3">
+                                <button id="import-btn" class="w-full py-3 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                                    ইম্পোর্ট করুন
+                                </button>
+                                <p class="text-xs text-secondary mt-2 text-center">আপনার Goodreads থেকে এক্সপোর্ট করা CSV ফাইলটি এখানে আপলোড করুন।</p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Danger Zone Section -->
@@ -152,8 +264,8 @@
     </main>
 
     <!-- Footer Section -->
-    <footer class="text-white py-8 mt-12" style="background-color: #4A3F35;">
-        <div class="container mx-auto px-6 text-center text-gray-300">
+    <footer class="bg-primary text-primary-content py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
             <p>&copy; ২০২৫ আমার পাঠশালা। সর্বস্বত্ব সংরক্ষিত।</p>
         </div>
     </footer>
@@ -166,5 +278,25 @@
     
     <!-- External JS -->
     <script src="profile.js" defer></script>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOpenIcon = document.getElementById('menu-open-icon');
+            const menuCloseIcon = document.getElementById('menu-close-icon');
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    menuOpenIcon.classList.toggle('block');
+                    menuOpenIcon.classList.toggle('hidden');
+                    menuCloseIcon.classList.toggle('hidden');
+                    menuCloseIcon.classList.toggle('block');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
